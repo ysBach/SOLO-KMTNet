@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-one-dark-pro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMTNet Observation Script Studio (scConv Web)</title>
+  <style>
+    :root, html.theme-one-dark-pro {
+      --bg: #282C34;
+      --panel: #21252B;
+      --panel-header: #1E2227;
+      --border: #3E4451;
+      --text: #ABB2BF;
+      --text-muted: #5C6370;
+      --sky: #61AFEF;
+      --emerald: #98C379;
+      --amber: #E5C07B;
+      --indigo: #C678DD;
+      --rose: #E06C75;
+    }
+    html.theme-nord {
+      --bg: #2E3440;
+      --panel: #3B4252;
+      --panel-header: #2E3440;
+      --border: #4C566A;
+      --text: #ECEFF4;
+      --text-muted: #88C0D0;
+      --sky: #88C0D0;
+      --emerald: #A3BE8C;
+      --amber: #EBCB8B;
+      --indigo: #B48EAD;
+      --rose: #BF616A;
+    }
+    html.theme-github-dimmed {
+      --bg: #22272E;
+      --panel: #2D333B;
+      --panel-header: #1C2128;
+      --border: #444C56;
+      --text: #ADBAC7;
+      --text-muted: #768390;
+      --sky: #539BF5;
+      --emerald: #57AB5A;
+      --amber: #C69026;
+      --indigo: #B083F0;
+      --rose: #E5534B;
+    }
+    html.theme-dracula {
+      --bg: #282A36;
+      --panel: #21222C;
+      --panel-header: #191A21;
+      --border: #44475A;
+      --text: #F8F8F2;
+      --text-muted: #6272A4;
+      --sky: #8BE9FD;
+      --emerald: #50FA7B;
+      --amber: #F1FA8C;
+      --indigo: #BD93F9;
+      --rose: #FF5555;
+    }
+    html.theme-solarized-dark {
+      --bg: #002B36;
+      --panel: #073642;
+      --panel-header: #00212B;
+      --border: #586E75;
+      --text: #93A1A1;
+      --text-muted: #657B83;
+      --sky: #268BD2;
+      --emerald: #859900;
+      --amber: #B58900;
+      --indigo: #6C71C4;
+      --rose: #DC322F;
+    }
+    html.theme-red-night {
+      --bg: #180808;
+      --panel: #220B0B;
+      --panel-header: #140505;
+      --border: #991B1B;
+      --text: #FCA5A5;
+      --text-muted: #F87171;
+      --sky: #EF4444;
+      --emerald: #EF4444;
+      --amber: #F87171;
+      --indigo: #FCA5A5;
+      --rose: #DC2626;
+    }
+    html.theme-daylight {
+      --bg: #F8FAFC;
+      --panel: #FFFFFF;
+      --panel-header: #F1F5F9;
+      --border: #CBD5E1;
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --sky: #0284C7;
+      --emerald: #059669;
+      --amber: #D97706;
+      --indigo: #4F46E5;
+      --rose: #E11D48;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--panel-header);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+    .badge { font-size: 10px; font-family: monospace; padding: 2px 6px; border-radius: 4px; background: #1E293B; color: var(--sky); border: 1px solid var(--border); }
+    .btn-group { display: flex; align-items: center; gap: 4px; }
+    button, .btn {
+      background: #1E293B;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    a.btn { text-decoration: none; }
+    button:hover, .btn:hover { background: #334155; color: #fff; }
+    button.active { background: #0284C7; border-color: #38BDF8; color: #fff; }
+    button.primary { background: #0284C7; border-color: #38BDF8; color: #fff; }
+    button.primary:hover { background: #0369A1; }
+    button.success { background: #059669; border-color: #34D399; color: #fff; }
+    button.success:hover { background: #047857; }
+    .input-box {
+      background: #040711;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    .top-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      height: 48%;
+      min-height: 240px;
+    }
+    .bottom-panel {
+      flex: 1;
+      min-height: 200px;
+      height: 52%;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .panel-header {
+      background: var(--panel-header);
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .panel-body {
+      flex: 1;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    textarea, pre {
+      flex: 1;
+      width: 100%;
+      background: #040711;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.45;
+      resize: none;
+      outline: none;
+      white-space: pre;
+      overflow: auto;
+    }
+    textarea:focus { border-color: var(--sky); }
+    #out-text { color: #A7F3D0; }
+    .status-bar {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-content {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .modal-header {
+      background: var(--panel-header);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .modal-body {
+      padding: 14px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .modal-footer {
+      background: var(--panel-header);
+      padding: 8px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    #map-tooltip {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--sky);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-family: monospace;
+      color: #E2E8F0;
+      pointer-events: none;
+      display: none;
+      z-index: 20;
+      max-width: 260px;
+    }
+
+    @media (max-width: 900px) {
+      .top-panels { grid-template-columns: 1fr; height: auto; }
+      body { height: auto; overflow: auto; }
+      main { height: auto; overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <span>🔭 KMTNet Script Studio</span>
+      <span class="badge">Standalone (Offline)</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+      <button class="primary" onclick="document.getElementById('planning-file').click()">Add planning CSV</button>
+      <input type="file" id="planning-file" accept=".csv,text/csv,text/plain" hidden onchange="onPlanningFileInput(this)">
+      <button id="show-batch" style="display: none;" onclick="openBatchModal()">Generated scripts</button>
+      <span style="font-size: 11px; color: var(--text-muted);">Presets:</span>
+      <div class="btn-group">
+        <button onclick="loadPreset('solo')">SOLO</button>
+        <button onclick="loadPreset('ksp')">KSP</button>
+        <button onclick="loadPreset('blg')">BLG</button>
+        <button onclick="loadPreset('deeps')">DEEPS</button>
+      </div>
+
+      <label style="font-size: 11px; display: flex; align-items: center; gap: 4px;">
+        <span>Loop N:</span>
+        <input type="number" id="loop-n" class="input-box" style="width: 50px;" value="0" min="0" oninput="compileScript()">
+      </label>
+
+      <button class="primary" onclick="compileScript()">Compile</button>
+      <button onclick="openAppearanceModal()">🎨 Appearance</button>
+      <a class="btn" href="README.md" target="_blank" title="Manual: README.md next to this file">📖 Manual</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="top-panels">
+      <!-- Setting File Panel -->
+      <div class="panel" data-drop="set">
+        <div class="panel-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span>Setting File (.set)</span>
+            <input type="text" id="set-name" class="input-box" style="width: 100px;" value="SOLO.set" oninput="compileScript()">
+          </div>
+          <div class="btn-group">
+            <button onclick="document.getElementById('set-file').click()" title="Open a .set file from disk (or drop it on this panel)">📂 Open</button>
+            <input type="file" id="set-file" accept=".set,.txt,text/plain" hidden onchange="onFileInput(this, 'set')">
+            <button onclick="downloadText(document.getElementById('set-text').value, document.getElementById('set-name').value)">Download</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <textarea id="set-text" spellcheck="false" oninput="compileScript()">SOLO                   # Project name
+1                      # Filter sequence per each position
+R 60                   # Filter name and exposure time
+1                      # column no. for LABEL
+2                      # column no. for RA
+3                      # column no. for DEC
+0                      # set for COPT
+OBJECT                 # name for IMAGETYP
+1                      # column no. for OBJECT name
+0                      # column no. for FILTER
+0                      # column no. for EXPOSURE time
+0                      # column no. for UTOBS
+0                      # set for UTTOL time in seconds</textarea>
+          <div class="status-bar">
+            <span>scConv setting (12 + nfil lines)</span>
+            <span id="set-status">Valid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catalog File Panel with Table & Sky Map Tabs -->
+      <div class="panel" data-drop="cat">
+        <div class="panel-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span>Catalog File (.cat)</span>
+            <input type="text" id="cat-name" class="input-box" style="width: 120px;" value="KSP3_07_12h.cat" oninput="compileScript()">
+          </div>
+          <div class="btn-group">
+            <button id="btn-cat-raw" class="active" onclick="setCatTab('raw')">Raw</button>
+            <button id="btn-cat-table" onclick="setCatTab('table')">Table</button>
+            <button id="btn-cat-map" onclick="setCatTab('map')">Sky Map</button>
+            <button onclick="openPasteModal()" style="background: rgba(14, 165, 233, 0.2); border-color: rgba(56, 189, 248, 0.4); color: #38BDF8;" title="Copy & paste from Excel, Google Sheets, or CSV">📋 Paste Excel/CSV</button>
+            <button onclick="document.getElementById('cat-file').click()" title="Open a .cat file from disk (or drop it on this panel)">📂 Open</button>
+            <input type="file" id="cat-file" accept=".cat,.txt,.dat,text/plain" hidden onchange="onFileInput(this, 'cat')">
+            <button onclick="downloadText(document.getElementById('cat-text').value, document.getElementById('cat-name').value)">Download</button>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11px;">
+            <button onclick="document.getElementById('timing-file').click()">Load timing CSV</button>
+            <input type="file" id="timing-file" accept=".csv,text/csv,text/plain" hidden onchange="onTimingFileInput(this)">
+            <button id="clear-timing" disabled onclick="resetWindowTiming(); compileScript()">Clear timing</button>
+            <span id="timing-status" role="status" style="color: var(--text-muted);">No timing CSV loaded.</span>
+          </div>
+          <div style="margin-bottom: 8px; font-size: 10px; color: var(--text-muted);">
+            CSV timing overrides .set timing. UTOBS = earliest start UTC. UTTOL = window length in seconds.
+            Controller loop and stop handling needs confirmation.
+          </div>
+          <!-- Raw Text View -->
+          <div id="cat-raw-container" style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; font-size: 10px; color: var(--text-muted);">
+              <span>Whitespace-separated columns (# or = for comments):</span>
+              <button onclick="openPasteModal()" style="font-size: 10px; color: var(--sky); padding: 2px 6px;">📋 Paste Table</button>
+            </div>
+            <textarea id="cat-text" spellcheck="false" oninput="compileScript()">ZN2442-2      07:29:00 -69:50:00
+ZN2640-1      08:33:20 -55:35:00
+ZN2525-2      08:03:04 -11:35:00
+ZN2559-2      08:19:05 -27:50:00
+ZN2835-2      09:19:10 -22:50:50
+ZN3059-2      09:53:00 -74:20:00
+ZN3513-2      11:06:40 -22:55:00
+ZN3115-2      10:07:10 -08:26:00
+ZN3521-2      11:07:40 -00:25:00
+ZN3887-2      11:49:00 -17:21:00
+ZE265007-2    11:10:35 -47:10:00</textarea>
+            <div class="status-bar">
+              <span>Whitespace-separated columns</span>
+              <span id="cat-status">0 targets</span>
+            </div>
+          </div>
+
+          <!-- Table View -->
+          <div id="cat-table-container" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-size: 11px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-weight: 600; color: var(--text);">Catalog Targets:</span>
+                <span id="cat-table-count" style="color: var(--sky); font-family: monospace;">0 targets</span>
+                <span style="font-size: 10px; color: var(--text-muted);">(Ctrl+V to paste table)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <button onclick="openPasteModal()" class="primary">📋 Paste Excel / CSV</button>
+                <button onclick="addSampleTargetRow()">+ Add Target</button>
+              </div>
+            </div>
+            <div style="flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: #040711;">
+              <table id="cat-table-elem" style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 11px; text-align: left;">
+                <thead style="background: var(--panel-header); border-bottom: 1px solid var(--border); position: sticky; top: 0;">
+                  <tr>
+                    <th style="padding: 6px 8px; width: 35px; text-align: center; color: var(--text-muted);">#</th>
+                    <th style="padding: 6px 8px; color: var(--sky);">Col 1 (LABEL)</th>
+                    <th style="padding: 6px 8px; color: var(--emerald);">Col 2 (RA)</th>
+                    <th style="padding: 6px 8px; color: var(--indigo);">Col 3 (DEC)</th>
+                    <th style="padding: 6px 8px; color: var(--text-muted);">Col 4</th>
+                    <th style="padding: 6px 8px; color: var(--text-muted);">Col 5</th>
+                    <th style="padding: 6px 8px; color: var(--text-muted);">Col 6</th>
+                    <th style="padding: 6px 8px; color: var(--amber);">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="cat-table-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sky Map View -->
+          <div id="cat-map-container" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
+            <!-- Top Bar 1: Coordinate Systems & Projections -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; font-size: 10px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span>Coords:</span>
+                <select id="map-sys" class="input-box" onchange="onCoordSystemChange()" style="font-size: 10px;">
+                  <option value="equatorial">Equatorial (RA/Dec)</option>
+                  <option value="altaz">AltAz (Local Sky)</option>
+                  <option value="galactic">Galactic (l, b)</option>
+                  <option value="ecliptic">Ecliptic (λ, β)</option>
+                </select>
+
+                <span>Proj:</span>
+                <select id="map-proj" class="input-box" onchange="renderSkyMap()" style="font-size: 10px;">
+                  <option value="equirectangular">Equirectangular</option>
+                  <option value="mollweide">Mollweide</option>
+                  <option value="orthographic" hidden>Orthographic</option>
+                </select>
+
+                <button onclick="zoomMap(1.25)" title="Zoom in">+</button>
+                <button onclick="zoomMap(0.8)" title="Zoom out">-</button>
+                <button onclick="resetMapView()" title="Reset center & zoom">↺</button>
+              </div>
+
+              <!-- Layer Toggles -->
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <label><input type="checkbox" id="chk-gal" checked onchange="renderSkyMap()"> <span style="color: var(--indigo);">Galactic</span></label>
+                <label><input type="checkbox" id="chk-ecl" checked onchange="renderSkyMap()"> <span style="color: var(--amber);">Ecliptic</span></label>
+                <label><input type="checkbox" id="chk-horiz" checked onchange="renderSkyMap()"> <span style="color: var(--emerald);">Horizon</span></label>
+                <label><input type="checkbox" id="chk-sun" checked onchange="renderSkyMap()"> <span style="color: #FACC15;">Sun</span></label>
+                <label><input type="checkbox" id="chk-moon" checked onchange="renderSkyMap()"> <span style="color: var(--sky);">Moon</span></label>
+                <label><input type="checkbox" id="chk-labels" onchange="renderSkyMap()"> <span>Labels</span></label>
+                <label><input type="checkbox" id="chk-compass" checked onchange="renderSkyMap()"> <span>Compass</span></label>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <label><input type="checkbox" id="chk-moon-zone" checked onchange="renderSkyMap()"> <span style="color: var(--rose);">Zone:</span></label>
+                <input type="range" id="rng-moon-zone" min="5" max="60" step="5" value="30" oninput="document.getElementById('lbl-moon-zone').textContent = this.value + '°'; renderSkyMap();" style="width: 45px;">
+                <span id="lbl-moon-zone" style="font-family: monospace; color: var(--rose); font-size: 10px;">30°</span>
+              </div>
+            </div>
+
+            <!-- Top Bar 2: Daylight / Twilight & Telescope Site Status -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 10px; margin-bottom: 4px; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span style="color: var(--text-muted);">Site:</span>
+                <select id="site-select" class="input-box" style="font-size: 10px;" onchange="onSiteChange()">
+                  <option value="CTIO">CTIO (Chile, -3h)</option>
+                  <option value="SAAO">SAAO (S. Africa, +2h)</option>
+                  <option value="SSO">SSO (Australia, +10h)</option>
+                </select>
+                <span id="site-twilight-badge" style="padding: 1px 6px; border-radius: 4px; font-family: monospace; font-size: 10px; font-weight: bold; border: 1px solid var(--border);">
+                  🌑 Dark Night
+                </span>
+                <span id="site-moon-badge" style="color: var(--sky); font-family: monospace; font-size: 10px;">
+                  Moon Alt: +0°
+                </span>
+              </div>
+
+              <!-- Time Step Controls -->
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span>UTC:</span>
+                <input type="datetime-local" id="map-time" class="input-box" style="font-size: 10px;" onchange="updateObservationDate(new Date(this.value))">
+                <div class="btn-group">
+                  <button onclick="shiftMapTime(-86400)">-1d</button>
+                  <button onclick="shiftMapTime(-3600)">-1h</button>
+                  <button onclick="setMapNow()">Now</button>
+                  <button onclick="shiftMapTime(3600)">+1h</button>
+                  <button onclick="shiftMapTime(86400)">+1d</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG Sky Canvas (Pannable / Draggable) -->
+            <div style="flex: 1; position: relative; background: #050811; border: 1px solid var(--border); border-radius: 4px; overflow: hidden;">
+              <svg id="sky-svg" viewBox="0 0 600 270" style="width: 100%; height: 100%; cursor: grab; select-none;">
+                <!-- Generated dynamically -->
+              </svg>
+              <div id="map-tooltip"></div>
+              <div id="map-toast" style="display: none; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: #1e3a8a; border: 1px solid #60a5fa; color: #eff6ff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-family: monospace; z-index: 30; pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.5);"></div>
+              <div id="map-drag-hint" style="position: absolute; bottom: 4px; left: 6px; font-size: 9px; color: var(--text-muted); pointer-events: none;">
+                Drag axes to pan · Scroll wheel to zoom
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Panel: Output Script -->
+    <div class="bottom-panel panel">
+      <div class="panel-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>Output Script:</span>
+          <span id="out-name" style="color: var(--emerald); font-family: monospace;">scKSP3_07_12h.cat</span>
+          <span id="out-stats" style="font-size: 11px; color: var(--text-muted); font-family: monospace;"></span>
+        </div>
+        <div class="btn-group">
+          <button id="download-script" class="success" onclick="downloadOutput()">Download Script</button>
+          <button id="copy-script" onclick="copyOutput()">Copy Text</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <pre><code id="out-text"></code></pre>
+      </div>
+    </div>
+  </main>
+
+  <!-- Appearance Modal -->
+  <div id="appearance-modal" class="modal-overlay" onclick="closeAppearanceModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span>🎨 Appearance &amp; Display Setter</span>
+        <button onclick="closeAppearanceModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 14px;">
+          <label style="font-weight: 600; display: block; margin-bottom: 6px;">Theme Color Palette (Low Eye Strain):</label>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <button onclick="setTheme('one-dark-pro')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #282C34; border: 1px solid #3E4451; border-radius: 50%; display: inline-block;"></span>
+              <strong>One Dark Pro (Recommended)</strong> - Soft charcoal slate with pastel accents. Minimizes eye fatigue.
+            </button>
+            <button onclick="setTheme('nord')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #2E3440; border: 1px solid #4C566A; border-radius: 50%; display: inline-block;"></span>
+              <strong>Nord (Arctic Slate)</strong> - Calm arctic blue-grey palette designed for prolonged viewing.
+            </button>
+            <button onclick="setTheme('github-dimmed')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #22272E; border: 1px solid #444C56; border-radius: 50%; display: inline-block;"></span>
+              <strong>GitHub Dark Dimmed</strong> - Medium-contrast dark theme preferred by developers.
+            </button>
+            <button onclick="setTheme('dracula')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #282A36; border: 1px solid #44475A; border-radius: 50%; display: inline-block;"></span>
+              <strong>Dracula</strong> - Classic vibrant dark palette with purple and cyan accents.
+            </button>
+            <button onclick="setTheme('solarized-dark')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #002B36; border: 1px solid #586E75; border-radius: 50%; display: inline-block;"></span>
+              <strong>Solarized Dark</strong> - Precision cyan-slate palette scientifically designed for contrast.
+            </button>
+            <button onclick="setTheme('red-night')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #991B1B; border: 1px solid #EF4444; border-radius: 50%; display: inline-block;"></span>
+              <strong style="color: #EF4444;">Observatory Red (Scotopic)</strong> - Monochromatic red night-vision for telescope domes.
+            </button>
+            <button onclick="setTheme('daylight')" style="padding: 8px; justify-content: flex-start; text-align: left;">
+              <span style="width: 12px; height: 12px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 50%; display: inline-block;"></span>
+              <strong>Daylight Clear</strong> - High contrast light mode for daytime prep.
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label style="font-weight: 600; display: block; margin-bottom: 6px;">Font Size Scaling:</label>
+          <div class="btn-group">
+            <button onclick="setFontScale('small')">Small (88%)</button>
+            <button onclick="setFontScale('normal')">Normal (100%)</button>
+            <button onclick="setFontScale('large')">Large (115%)</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="primary" onclick="closeAppearanceModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paste / Import Excel & CSV Table Modal -->
+  <div id="paste-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 16px;">📋</span>
+          <div>
+            <div style="font-weight: 600; font-size: 13px;">Paste / Import from Excel, Google Sheets, or CSV</div>
+            <div style="font-size: 10px; color: var(--text-muted); font-weight: normal;">Copy cells directly from spreadsheet (Ctrl+C) and paste below (Ctrl+V)</div>
+          </div>
+        </div>
+        <button onclick="closePasteModal()" style="border: none; background: transparent; font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <label style="font-weight: 600; font-size: 11px;">Pasted Tabular Data: <span id="paste-row-count" style="color: var(--sky); font-weight: normal;">(0 targets detected)</span></label>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="loadSamplePasteData()" style="font-size: 10px; color: var(--sky);">✨ Load Sample Excel Data</button>
+            <button onclick="document.getElementById('paste-input-text').value = ''; onPasteInputChanged();" style="font-size: 10px; color: var(--text-muted);">Clear</button>
+          </div>
+        </div>
+        <textarea id="paste-input-text" rows="5" style="height: 100px; font-family: monospace; font-size: 11px;" placeholder="Paste Excel/Sheets cells or CSV text here..." oninput="onPasteInputChanged()"></textarea>
+
+        <!-- Parser & Column Controls -->
+        <div id="paste-controls-box" style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 6px; padding: 10px; display: none; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="color: var(--text-muted);">Delimiter:</span>
+              <select id="paste-delim-sel" class="input-box" style="font-size: 11px; padding: 2px 4px;" onchange="onPasteInputChanged()">
+                <option value="auto">Auto-detect</option>
+                <option value="tab">Tab (Excel / Google Sheets)</option>
+                <option value="comma">Comma (CSV)</option>
+                <option value="semi">Semicolon (;)</option>
+                <option value="whitespace">Whitespace</option>
+              </select>
+            </div>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="checkbox" id="paste-chk-header" onchange="updatePastePreview()">
+              <span>First row is column header</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;" title="Converts spaces or decimal degrees to HH:MM:SS ±DD:MM:SS">
+              <input type="checkbox" id="paste-chk-norm" checked onchange="updatePastePreview()">
+              <span>Normalize Coords to HH:MM:SS</span>
+            </label>
+          </div>
+
+          <!-- Column Mapping -->
+          <div style="border-top: 1px solid var(--border); padding-top: 8px;">
+            <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Assign Catalog Columns:</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+              <div style="background: var(--panel); padding: 6px; border: 1px solid var(--border); border-radius: 4px;">
+                <label style="font-size: 10px; color: var(--sky); display: block; margin-bottom: 3px; font-weight: 600;">LABEL (Col 1)</label>
+                <select id="paste-sel-label" class="input-box" style="width: 100%; font-size: 10px;" onchange="updatePastePreview()"></select>
+              </div>
+              <div style="background: var(--panel); padding: 6px; border: 1px solid var(--border); border-radius: 4px;">
+                <label style="font-size: 10px; color: var(--emerald); display: block; margin-bottom: 3px; font-weight: 600;">RA (Col 2)</label>
+                <select id="paste-sel-ra" class="input-box" style="width: 100%; font-size: 10px;" onchange="updatePastePreview()"></select>
+              </div>
+              <div style="background: var(--panel); padding: 6px; border: 1px solid var(--border); border-radius: 4px;">
+                <label style="font-size: 10px; color: var(--indigo); display: block; margin-bottom: 3px; font-weight: 600;">DEC (Col 3)</label>
+                <select id="paste-sel-dec" class="input-box" style="width: 100%; font-size: 10px;" onchange="updatePastePreview()"></select>
+              </div>
+            </div>
+            <div style="margin-top: 6px;">
+              <label style="font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="checkbox" id="paste-chk-extra" checked onchange="updatePastePreview()">
+                <span>Include remaining columns (Filter, ExpTime, etc.)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div style="border-top: 1px solid var(--border); padding-top: 8px;">
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Preview of Generated .cat Format (First 5 lines):</span>
+            <pre id="paste-preview-text" style="height: 70px; background: #000; color: #38BDF8; font-size: 10px; border-radius: 4px; padding: 6px; overflow: auto;"></pre>
+          </div>
+
+          <!-- Replace vs Append -->
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 11px;">
+            <span style="color: var(--text-muted);">Destination:</span>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="pasteMode" value="replace" checked>
+              <span>Replace catalog</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="pasteMode" value="append">
+              <span>Append to catalog</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="gap: 8px;">
+        <button onclick="closePasteModal()">Cancel</button>
+        <button id="paste-btn-import" class="primary" disabled onclick="doImportTable()">Import Targets</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="batch-modal" class="modal-overlay" onclick="closeBatchModal()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 1100px; width: 95vw; height: 85vh;">
+      <div class="modal-header">
+        <span>Nightly observing scripts</span>
+        <button onclick="closeBatchModal()">Close</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0;">
+        <div id="batch-status" role="status">Add a planning CSV to generate every site and night.</div>
+        <div id="batch-warnings" style="font-size: 11px; color: var(--amber);"></div>
+        <div style="font-size: 11px; color: var(--text-muted);">
+          Uses the SOLO preset. Each field uses its rise/set times within the full observing night.
+          UTOBS = earliest start UTC. UTTOL = window length in seconds. Fields can share the night-end cutoff.
+          <span id="batch-loop-status"></span>
+          Controller loop and stop handling remains unverified.
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; flex: 1; min-height: 0; overflow: auto;">
+          <div id="batch-file-list" style="flex: 1 1 260px; min-width: 0; overflow: auto;"></div>
+          <div style="flex: 2 1 400px; min-width: 0; display: flex; flex-direction: column; min-height: 220px;">
+            <strong id="batch-preview-name" style="font-size: 12px; margin-bottom: 6px;"></strong>
+            <pre style="flex: 1; overflow: auto;"><code id="batch-preview"></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="gap: 8px;">
+        <button onclick="document.getElementById('planning-file').click()">Add planning CSV</button>
+        <button id="download-batch" class="success" disabled onclick="downloadBatchZip()">Download all scripts (ZIP)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PRESETS = [{"id": "solo", "title": "SOLO", "description": "Single R-band 60 s exposure per tile.", "badge": "Single Filter", "defaultCatName": "SOLO_CTIO_2026-10-27.cat", "defaultSetName": "SOLO.set", "defaultLoopN": 0, "setFileContent": "SOLO                   # Project name\n1                      # Filter sequence per each position\nR 60                   # Filter name and exposure time\n1                      # column no. for LABEL\n2                      # column no. for RA\n3                      # column no. for DEC\n0                      # set for COPT\nOBJECT                 # name for IMAGETYP\n1                      # column no. for OBJECT name\n0                      # column no. for FILTER\n0                      # column no. for EXPOSURE time\n0                      # column no. for UTOBS\n0                      # set for UTTOL time in seconds", "catFileContent": "# SOLO sample (label RA DEC); label = {site C/S/A}{days since 2025-01-01}{W dusk/E dawn/O opp}{idx}\nC0664W03   20:45:01.38  -17:59:18.6  # CTIO_2026-10-27_dusk_03  n_targets 11\n"},{"id":"ksp","title":"KSP (KMTNet Supernova Program)","description":"Fixed 3-filter sequence (B, V, I @ 60s) for supernova & transient search fields.","badge":"Standard 3-Filter","defaultCatName":"KSP3_07_12h.cat","defaultSetName":"KSP.set","defaultLoopN":0,"setFileContent":"KSP                    # Project name\n3                      # Filter sequence per each position\nB 60                   # Filter name and exposure time\nV 60                   # Filter name and exposure time\nI 60                   # Filter name and exposure time\n1                      # column no. for LABEL\n2                      # column no. for RA\n3                      # column no. for DEC\n0                      # set for COPT\nOBJECT                 # name for IMAGETYP\n1                      # column no. for OBJECT name\n0                      # column no. for FILTER\n0                      # column no. for EXPOSURE time\n0                      # column no. for UTOBS\n0                      # set for UTTOL time in seconds","catFileContent":"ZN2442-2      07:29:00 -69:50:00\nZN2640-1      08:33:20 -55:35:00\nZN2525-2      08:03:04 -11:35:00\nZN2559-2      08:19:05 -27:50:00\nZN2835-2      09:19:10 -22:50:50\nZN3059-2      09:53:00 -74:20:00\nZN3513-2      11:06:40 -22:55:00\nZN3115-2      10:07:10 -08:26:00\nZN3521-2      11:07:40 -00:25:00\nZN3887-2      11:49:00 -17:21:00\nZE265007-2    11:10:35 -47:10:00"},{"id":"blg","title":"BLG (Galactic Bulge Microlensing)","description":"Bulge survey mode where filter & exptime vary per field from catalog columns, with COPT=1 offset correction.","badge":"Bulge Survey (COPT=1)","defaultCatName":"BLG01_night.cat","defaultSetName":"BLG.set","defaultLoopN":1,"setFileContent":"BLG                    # Project name\n0                      # Filter sequence per each position (0: from catalog)\n1                      # column no. for LABEL\n2                      # column no. for RA\n3                      # column no. for DEC\n1                      # set for COPT (1 for BLG)\nOBJECT                 # name for IMAGETYP\n1                      # column no. for OBJECT name\n4                      # column no. for FILTER\n5                      # column no. for EXPOSURE time\n0                      # column no. for UTOBS\n0                      # set for UTTOL time in seconds","catFileContent":"# BLG Target catalog: NAME RA DEC FILTER EXPTIME SUBID\nBLG01        17:55:24 -30:00:00  I  60  -  S1\nBLG02        17:58:30 -29:00:00  I  60  -  S2\nBLG03        18:02:15 -28:15:00  V  120 -  S3\nBLG04        17:51:10 -31:10:00  I  60  -  S4\nBLG05        17:48:00 -32:00:00  I  60  -  S5"},{"id":"deeps","title":"DEEPS (Deep Ecliptic Patrol Survey)","description":"Solar system moving target survey with scheduled ISO-standard observation timestamps.","badge":"Solar System Patrol","defaultCatName":"DEEPS_asteroids.cat","defaultSetName":"DEEPS.set","defaultLoopN":0,"setFileContent":"DEEPS                  # Project name\n1                      # Filter sequence per each position\nR 180                  # Filter name and exposure time\n1                      # column no. for LABEL\n5                      # column no. for RA\n6                      # column no. for DEC\n0                      # set for COPT\nOBJECT                 # name for IMAGETYP\n1                      # column no. for OBJECT name\n0                      # column no. for FILTER\n0                      # column no. for EXPOSURE time\n10                     # column no. for UTOBS (time HHMMSS, cols 7,8,9 are YYYY MM DD)\n60                     # set for UTTOL time in seconds","catFileContent":"# DEEPS sample: NAME ID TYPE EXP RA DEC YYYY MM DD HHMMSS\nNEO-2024-AA  01 AST 180 12:45:10 +05:22:15 2026 10 23 143000\nNEO-2024-AB  02 AST 180 12:55:20 +06:12:40 2026 10 23 143500\nNEO-2024-AC  03 AST 180 13:08:45 +07:05:10 2026 10 23 144000"},{"id":"custom_single","title":"Single Filter Deep Field (V-band 120s)","description":"Single exposure per coordinate for deep stellar cluster or variable star monitoring.","badge":"Single Filter","defaultCatName":"ClField_01.cat","defaultSetName":"ClField.set","defaultLoopN":0,"setFileContent":"CUSTOM                 # Project name\n1                      # Filter sequence per each position\nV 120                  # Filter name and exposure time\n1                      # column no. for LABEL\n2                      # column no. for RA\n3                      # column no. for DEC\n0                      # set for COPT\nOBJECT                 # name for IMAGETYP\n1                      # column no. for OBJECT name\n0                      # column no. for FILTER\n0                      # column no. for EXPOSURE time\n0                      # column no. for UTOBS\n0                      # set for UTTOL time in seconds","catFileContent":"NGC1851-C1    05:14:06 -40:02:48\nNGC1851-C2    05:14:20 -40:05:10\nNGC1904-C1    05:24:11 -24:31:29\nNGC2808-C1    09:12:03 -64:51:46"}];
+    const RAD = Math.PI / 180;
+    const DEG = 180 / Math.PI;
+
+    const SITES = {
+      CTIO: { code: 'CTIO', lat: -30.169, lon: -70.806, offset: -3 },
+      SAAO: { code: 'SAAO', lat: -32.378, lon: 20.811, offset: 2 },
+      SSO: { code: 'SSO', lat: -31.275, lon: 149.064, offset: 10 }
+    };
+
+    let currentSite = SITES.CTIO;
+    let obsDate = new Date();
+    let mapCoordSys = 'equatorial';
+    let mapCenterC1 = 12.0;
+    let mapCenterC2 = 0.0;
+    let mapZoom = 1.0;
+    let isDragging = false;
+    let dragStart = null;
+    const windowTiming = { byId: null, fileName: '', error: '', loading: false, version: 0 };
+    const batchScripts = { files: [], version: 0, loading: false };
+    let scriptReady = false;
+
+    function padRight(s, w) {
+      s = String(s != null ? s : '-');
+      return s.length >= w ? s : s + ' '.repeat(w - s.length);
+    }
+    function padLeft(s, w) {
+      s = String(s != null ? s : '-');
+      return s.length >= w ? s : ' '.repeat(w - s.length) + s;
+    }
+
+    function parseCsvRows(text) {
+      const rows = [];
+      let row = [], cell = '', quoted = false, closedQuote = false;
+      text = String(text).replace(/^\uFEFF/, '');
+      const finishRow = () => {
+        row.push(cell.trim());
+        if (row.some(value => value !== '')) rows.push(row);
+        row = [];
+        cell = '';
+        closedQuote = false;
+      };
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (quoted) {
+          if (char === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+          else if (char === '"') { quoted = false; closedQuote = true; }
+          else cell += char;
+        } else if (char === ',') {
+          row.push(cell.trim());
+          cell = '';
+          closedQuote = false;
+        } else if (char === '\n' || char === '\r') {
+          finishRow();
+          if (char === '\r' && text[i + 1] === '\n') i++;
+        } else if (closedQuote) {
+          if (!/\s/.test(char)) throw new Error('Unexpected text after a quoted CSV value.');
+        } else if (char === '"') {
+          if (cell.trim() !== '') throw new Error('A CSV quote must start a value.');
+          cell = '';
+          quoted = true;
+        } else cell += char;
+      }
+      if (quoted) throw new Error('The timing CSV contains an unclosed quote.');
+      finishRow();
+      return rows;
+    }
+
+    function parseWindowUtc(value) {
+      // Values without a zone use UTC, as specified by the input column names.
+      const match = String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?(Z|[+-]\d{2}:\d{2})?$/i);
+      if (!match) throw new Error('Use an ISO timestamp with seconds for each window boundary.');
+      const [year, month, day, hour, minute, second] = match.slice(1, 7).map(Number);
+      const millis = Number((match[7] || '').padEnd(3, '0'));
+      const date = new Date(0);
+      date.setUTCFullYear(year, month - 1, day);
+      date.setUTCHours(hour, minute, second, millis);
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 ||
+          date.getUTCDate() !== day || date.getUTCHours() !== hour ||
+          date.getUTCMinutes() !== minute || date.getUTCSeconds() !== second) {
+        throw new Error('A window boundary contains an invalid date or time.');
+      }
+      let offset = 0;
+      const zone = match[8] || 'Z';
+      if (zone.toUpperCase() !== 'Z') {
+        const hours = Number(zone.slice(1, 3)), minutes = Number(zone.slice(4, 6));
+        if (hours > 23 || minutes > 59) throw new Error('A window boundary contains an invalid UTC offset.');
+        offset = (hours * 60 + minutes) * 60000 * (zone[0] === '+' ? 1 : -1);
+      }
+      return date.getTime() - offset;
+    }
+
+    function formatWindowUtc(milliseconds) {
+      return new Date(milliseconds).toISOString().slice(0, 19);
+    }
+
+    function makeWindowTiming(id, startMs, endMs, targetCount = null) {
+      // Keep the exported whole-second interval inside the source window.
+      startMs = Math.ceil(startMs / 1000) * 1000;
+      endMs = Math.floor(endMs / 1000) * 1000;
+      const tolerance = (endMs - startMs) / 1000;
+      if (tolerance < 1) throw new Error(id + ': the window needs at least one whole second for a positive UTTOL.');
+      return { id, startMs, endMs, tolerance,
+        startUtc: formatWindowUtc(startMs), endUtc: formatWindowUtc(endMs), targetCount };
+    }
+
+    function parseTimingCsv(text) {
+      const rows = parseCsvRows(text);
+      if (rows.length < 2) throw new Error('The timing CSV needs a header and at least one field.');
+      const headers = rows[0].map(value => value.toLowerCase());
+      const names = ['tile_id', 'altitude_window_start_ut', 'altitude_window_end_ut'];
+      const columns = names.map(name => {
+        if (headers.filter(value => value === name).length !== 1) {
+          throw new Error('The timing CSV needs exactly one ' + name + ' column.');
+        }
+        return headers.indexOf(name);
+      });
+      const byId = new Map();
+      rows.slice(1).forEach((row, index) => {
+        if (row.length !== headers.length) throw new Error('CSV record ' + (index + 2) + ' has the wrong column count.');
+        const id = row[columns[0]];
+        if (!id) throw new Error('CSV record ' + (index + 2) + ' has no tile_id.');
+        if (byId.has(id)) throw new Error('Duplicate tile_id in timing CSV: ' + id);
+        let startMs, endMs;
+        try {
+          startMs = parseWindowUtc(row[columns[1]]);
+          endMs = parseWindowUtc(row[columns[2]]);
+        } catch (error) {
+          throw new Error(id + ': ' + error.message);
+        }
+        byId.set(id, makeWindowTiming(id, startMs, endMs,
+          headers.includes('n_targets') ? row[headers.indexOf('n_targets')] : null));
+      });
+      return byId;
+    }
+
+    function updateTimingStatus(message, error = false) {
+      const status = document.getElementById('timing-status');
+      status.textContent = message;
+      status.style.color = error ? 'var(--rose)' : 'var(--text-muted)';
+      document.getElementById('clear-timing').disabled = !windowTiming.byId && !windowTiming.error && !windowTiming.loading;
+    }
+
+    function resetWindowTiming() {
+      windowTiming.version++;
+      windowTiming.byId = null;
+      windowTiming.fileName = '';
+      windowTiming.error = '';
+      windowTiming.loading = false;
+      updateTimingStatus('No timing CSV loaded.');
+    }
+
+    function importWindowTiming(text, fileName) {
+      windowTiming.loading = false;
+      windowTiming.fileName = fileName;
+      try {
+        const headers = parseCsvRows(text)[0] || [];
+        const fullPlan = ['site', 'session_start_ut', 'session_end_ut', 'rise_time_ut', 'set_time_ut']
+          .every(name => headers.some(header => header.toLowerCase() === name));
+        windowTiming.byId = fullPlan ? buildNightlyScripts(text).timings : parseTimingCsv(text);
+        windowTiming.error = '';
+      } catch (error) {
+        windowTiming.byId = null;
+        windowTiming.error = error.message;
+      }
+      compileScript();
+    }
+
+    function onTimingFileInput(input) {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      const version = ++windowTiming.version;
+      windowTiming.byId = null;
+      windowTiming.error = '';
+      windowTiming.loading = true;
+      compileScript();
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (version === windowTiming.version) importWindowTiming(String(reader.result), file.name);
+      };
+      reader.onerror = () => {
+        if (version !== windowTiming.version) return;
+        windowTiming.loading = false;
+        windowTiming.error = 'Cannot read timing CSV: ' + file.name;
+        compileScript();
+      };
+      reader.readAsText(file);
+    }
+
+    function matchWindowTiming(columns, sourceLine, labelColumn, byId) {
+      const commentAt = sourceLine.search(/[#=]/);
+      const commentId = commentAt < 0 ? '' : sourceLine.slice(commentAt + 1).trim().split(/\s+/)[0];
+      const matches = new Set([columns[labelColumn], commentId]
+        .filter(id => byId.has(id)).map(id => byId.get(id)));
+      if (matches.size !== 1) {
+        throw new Error((matches.size ? 'Conflicting timing matches for ' : 'No timing match for ') + columns[labelColumn]);
+      }
+      return [...matches][0];
+    }
+
+    function formatScriptLine(com, loop, num, comment = '') {
+      const parts = [
+        padRight(com[0], 11),
+        padRight(com[1], 12),
+        padLeft(com[2], 11),
+        padLeft(com[3], 11),
+        padLeft(com[4], 4),
+        padLeft(com[5], 8),
+        padLeft(com[6], 12),
+        padLeft(com[7], 6),
+        padLeft(com[8], 7),
+        padLeft(com[9], 19),
+        padLeft(com[10], 5),
+      ].join(' ');
+
+      const effLoop = loop < 3 ? 5 : loop;
+      let line = parts;
+      if (num % effLoop === 1) line += ' #' + num;
+      if (comment) line += (num % effLoop === 1 ? ' ' : ' # ') + comment;
+      line += num % effLoop === 0 ? '\n\n' : '\n';
+      return line;
+    }
+
+    function parseSet(text) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length < 11) return null;
+      let idx = 0;
+      const getTok = l => {
+        const m = l ? l.match(/^([^#\s=]+)/) : null;
+        return m ? m[1] : '';
+      };
+      const getTokens = l => {
+        if (!l) return [];
+        return l.split(/[#=]/)[0].trim().split(/\s+/).filter(Boolean);
+      };
+
+      const pID = getTok(lines[idx++]);
+      const nfil = parseInt(getTok(lines[idx++]), 10) || 0;
+      const filters = [];
+      if (nfil > 0) {
+        for (let i = 0; i < nfil; i++) {
+          const toks = getTokens(lines[idx++]);
+          filters.push({ name: toks[0] || 'V', exptime: parseFloat(toks[1] || '60') });
+        }
+      }
+      const cLabel = parseInt(getTok(lines[idx++]), 10) || 0;
+      const cRA = parseInt(getTok(lines[idx++]), 10) || 0;
+      const cDEC = parseInt(getTok(lines[idx++]), 10) || 0;
+      const copt = parseInt(getTok(lines[idx++]), 10) || 0;
+      const imgtyp = getTok(lines[idx++]) || 'OBJECT';
+      const cObject = parseInt(getTok(lines[idx++]), 10) || 0;
+      const cFilter = parseInt(getTok(lines[idx++]), 10) || 0;
+      const cExposure = parseInt(getTok(lines[idx++]), 10) || 0;
+      const cUTObs = parseInt(getTok(lines[idx++]), 10) || 0;
+      const tol = parseInt(getTok(lines[idx++]), 10) || 0;
+
+      return { pID, nfil, filters, cLabel, cRA, cDEC, copt, imgtyp, cObject, cFilter, cExposure, cUTObs, tol };
+    }
+
+    function compileCatalogRows(cfg, catText, byId = null, loopN = 0) {
+      const rows = [];
+      for (const line of catText.split(/\r?\n/)) {
+        const data = line.split(/[#=]/)[0].trim();
+        if (!data) continue;
+        const columns = ['-', ...data.split(/\s+/)];
+        while (columns.length <= 50) columns.push('-');
+        rows.push({ columns, source: line });
+      }
+      if (byId && rows.length === 0) throw new Error('Open a catalog to apply the timing CSV.');
+      const timings = rows.map(row => {
+        if (!byId) return null;
+        const timing = matchWindowTiming(row.columns, row.source, cfg.cLabel, byId);
+        const exposures = cfg.nfil > 0 ? cfg.filters.map(filter => Math.round(filter.exptime)) : [Number(row.columns[cfg.cExposure])];
+        if (exposures.some(seconds => !Number.isFinite(seconds) || seconds < 0) ||
+            exposures.reduce((sum, seconds) => sum + seconds, 0) * 1000 > timing.endMs - timing.startMs) {
+          throw new Error(timing.id + ': the exposure sequence cannot fit inside its window.');
+        }
+        return timing;
+      });
+      let out = '# KMTNet Observation script\n' +
+        '# ProjectID    LABEL         RA          DEC     COPT  IMGTYP   OBJECT_NAME FILTER EXPTIME      UTOBS          UTTOL #Comments\n' +
+        '#---------- ------------ ----------- ----------- ---- -------- ------------ ------ ------- ------------------- ----- ---------\n\n';
+      if (byId) {
+        out += '# Window convention: UTOBS is the window start. UTTOL is the whole-second window duration.\n' +
+          '# Each exposure must finish by its window_end UTC comment.\n' +
+          '# Controller loop and stop handling needs observatory confirmation.\n\n';
+      }
+      let nrun = 0, totalSec = 0;
+      rows.forEach((row, index) => {
+        const col = row.columns, timing = timings[index];
+        const prt = new Array(11).fill('-');
+        prt[0] = cfg.pID;
+        prt[2] = col[cfg.cRA] || '-';
+        prt[3] = col[cfg.cDEC] || '-';
+        prt[4] = String(cfg.copt);
+        prt[5] = cfg.imgtyp;
+        prt[6] = col[cfg.cObject] || '-';
+        prt[9] = col[cfg.cUTObs] || '-';
+        prt[10] = String(cfg.tol);
+        if (cfg.pID === 'DEEPS' && cfg.cUTObs >= 4) {
+          const yyyy = col[cfg.cUTObs - 3] || '2026';
+          const mm = col[cfg.cUTObs - 2] || '01';
+          const dd = col[cfg.cUTObs - 1] || '01';
+          const time = String(col[cfg.cUTObs] || '000000').padEnd(6, '0');
+          prt[9] = yyyy + '-' + mm + '-' + dd + 'T' + time.substr(0, 2) + ':' + time.substr(2, 2) + ':' + time.substr(4, 2);
+        }
+        if (timing) {
+          prt[9] = timing.startUtc;
+          prt[10] = String(timing.tolerance);
+        }
+        const comment = timing ? 'window_end=' + timing.endUtc + ' UTC tile_id=' + timing.id +
+          (timing.targetCount !== null ? ' n_targets=' + timing.targetCount : '') : '';
+        if (cfg.nfil !== 0) {
+          for (const filter of cfg.filters) {
+            nrun++;
+            prt[1] = (col[cfg.cLabel] || '-') + '(' + filter.name + ')';
+            prt[7] = filter.name;
+            prt[8] = Math.round(filter.exptime).toString();
+            totalSec += filter.exptime;
+            out += formatScriptLine(prt, cfg.nfil, nrun, comment);
+          }
+        } else {
+          nrun++;
+          const filter = col[cfg.cFilter] || '-';
+          const exposure = col[cfg.cExposure] || '-';
+          prt[1] = (col[cfg.cLabel] || '-') + '(' + filter + ')';
+          if (cfg.pID === 'BLG') prt[1] = (col[cfg.cLabel] || '-') + '(' + filter + ',' + (col[7] || '-') + ')';
+          prt[7] = filter;
+          prt[8] = exposure;
+          const numericExposure = parseFloat(exposure);
+          if (!isNaN(numericExposure)) totalSec += numericExposure;
+          out += formatScriptLine(prt, cfg.nfil, nrun, comment);
+        }
+      });
+      if (loopN > 0) out += '\n+ostart ' + loopN + '\n';
+      return { text: out, nrun, totalSec, fieldCount: rows.length };
+    }
+
+    function compileScript() {
+      scriptReady = false;
+      document.getElementById('download-script').disabled = true;
+      document.getElementById('copy-script').disabled = true;
+      const cfg = parseSet(document.getElementById('set-text').value);
+      const catName = document.getElementById('cat-name').value.trim() || 'target.cat';
+      document.getElementById('out-name').textContent = 'sc' + catName.replace(/^.*[\\/]/, '');
+      if (!cfg) {
+        document.getElementById('set-status').textContent = 'Error: Invalid setting file';
+        document.getElementById('out-text').textContent = '# Error: Setting file requires at least 11 valid lines.';
+        document.getElementById('out-stats').textContent = '';
+        return;
+      }
+      document.getElementById('set-status').textContent = 'Valid (' + cfg.pID + ', ' + (cfg.nfil > 0 ? cfg.nfil + ' filters' : 'nfil=0') + ')';
+      try {
+        if (windowTiming.loading) throw new Error('Loading timing CSV...');
+        if (windowTiming.error) throw new Error(windowTiming.error);
+        const result = compileCatalogRows(cfg, document.getElementById('cat-text').value, windowTiming.byId,
+          parseInt(document.getElementById('loop-n').value, 10) || 0);
+        document.getElementById('cat-status').textContent = result.fieldCount + ' targets';
+        document.getElementById('out-text').textContent = result.text;
+        document.getElementById('out-stats').textContent = ' · ' + result.nrun + ' exposures (' + (result.totalSec / 60).toFixed(1) + 'm)';
+        updateTimingStatus(windowTiming.byId
+          ? 'Filled timing for ' + result.fieldCount + '/' + result.fieldCount + ' rows from ' + windowTiming.fileName + '.'
+          : 'No timing CSV loaded.');
+        scriptReady = true;
+        document.getElementById('download-script').disabled = false;
+        document.getElementById('copy-script').disabled = false;
+      } catch (error) {
+        updateTimingStatus(error.message, !windowTiming.loading);
+        document.getElementById('out-text').textContent = '# Timing error: ' + error.message;
+        document.getElementById('out-stats').textContent = '';
+        return;
+      }
+      renderSkyMap();
+      renderCatTable();
+    }
+
+    function planningNightDate(start, site) {
+      const longitudeOffset = SITES[site].lon * 240000;
+      const localNoonShift = parseWindowUtc(start) + longitudeOffset + 12 * 3600000;
+      const midnightDate = new Date(localNoonShift).toISOString().slice(0, 10);
+      const localMidnight = parseWindowUtc(midnightDate + 'T00:00:00');
+      return new Date(localMidnight - longitudeOffset).toISOString().slice(0, 10);
+    }
+
+    function fullNightTiming(group, sourceTimings) {
+      const readTime = (row, name) => {
+        try { return parseWindowUtc(row[name]); }
+        catch (error) { throw new Error(row.tile_id + ' ' + name + ': ' + error.message); }
+      };
+      const intervals = group.rows.map(row => {
+        const start = readTime(row, 'session_start_ut'), end = readTime(row, 'session_end_ut');
+        if (end <= start) throw new Error(row.tile_id + ': session end must follow its start.');
+        return { start, end };
+      }).sort((a, b) => a.start - b.start);
+      let nightStart = intervals[0].start, nightEnd = intervals[0].end;
+      for (const interval of intervals.slice(1)) {
+        if (interval.start > nightEnd) throw new Error(group.site + ' ' + group.night + ': observing sessions contain a gap.');
+        nightEnd = Math.max(nightEnd, interval.end);
+      }
+      const starts = new Set(group.rows.filter(row => row.night_start_ut).map(row => readTime(row, 'night_start_ut')));
+      const ends = new Set(group.rows.filter(row => row.night_end_ut).map(row => readTime(row, 'night_end_ut')));
+      if (starts.size > 1 || ends.size > 1) throw new Error(group.site + ' ' + group.night + ': conflicting full-night boundaries.');
+      if (starts.size !== ends.size) throw new Error('Provide both night_start_ut and night_end_ut for ' + group.site + ' ' + group.night + '.');
+      if (starts.size === 1) {
+        nightStart = [...starts][0];
+        nightEnd = [...ends][0];
+      } else if (new Set(group.rows.map(row => row.session)).size < 2) {
+        throw new Error(group.site + ' ' + group.night + ': a single-session night needs night_start_ut and night_end_ut.');
+      }
+      if (nightEnd <= nightStart) throw new Error('The full-night end must follow its start.');
+      if (intervals.some(interval => interval.start < nightStart || interval.end > nightEnd)) {
+        throw new Error(group.site + ' ' + group.night + ': observing sessions extend outside the full-night boundaries.');
+      }
+      const timings = new Map();
+      for (const row of group.rows) {
+        const rise = readTime(row, 'rise_time_ut'), setting = readTime(row, 'set_time_ut');
+        if (setting <= rise) throw new Error(row.tile_id + ': setting must follow rising on an explicit UTC date.');
+        const start = Math.max(rise, nightStart), end = Math.min(setting, nightEnd);
+        const oldStart = readTime(row, 'altitude_window_start_ut'), oldEnd = readTime(row, 'altitude_window_end_ut');
+        const sessionStart = readTime(row, 'session_start_ut'), sessionEnd = readTime(row, 'session_end_ut');
+        const matchesSession = oldStart === Math.max(rise, sessionStart) && oldEnd === Math.min(setting, sessionEnd);
+        const matchesNight = oldStart === start && oldEnd === end;
+        if (!matchesSession && !matchesNight) {
+          throw new Error(row.tile_id + ': the CSV window does not match the supplied rise/set and observing bounds.');
+        }
+        timings.set(row.tile_id, makeWindowTiming(row.tile_id, start, end, sourceTimings.get(row.tile_id).targetCount));
+      }
+      return { timings, startUtc: formatWindowUtc(Math.ceil(nightStart / 1000) * 1000),
+        endUtc: formatWindowUtc(Math.floor(nightEnd / 1000) * 1000) };
+    }
+
+    function buildNightlyScripts(text, loopN = 0) {
+      const table = parseCsvRows(text);
+      const byId = parseTimingCsv(text);
+      const headers = table[0].map(value => value.toLowerCase());
+      const required = ['site', 'night_ut', 'session', 'order_in_night', 'tile_id', 'ra_hms', 'dec_dms',
+        'session_start_ut', 'session_end_ut', 'n_targets', 'rise_time_ut', 'set_time_ut',
+        'altitude_window_start_ut', 'altitude_window_end_ut'];
+      const optional = ['night_start_ut', 'night_end_ut', 'night_end_source'];
+      const columns = {};
+      for (const name of required) {
+        if (headers.filter(value => value === name).length !== 1) throw new Error('The planning CSV needs exactly one ' + name + ' column.');
+        columns[name] = headers.indexOf(name);
+      }
+      for (const name of optional) {
+        if (headers.filter(value => value === name).length > 1) throw new Error('Duplicate ' + name + ' column.');
+        columns[name] = headers.indexOf(name);
+      }
+      const siteCodes = { CTIO: 'C', SSO: 'S', SAAO: 'A' };
+      const sessionOrder = { dusk: 0, dawn: 1 };
+      const sessionCodes = { dusk: 'W', dawn: 'E' };
+      const epoch = parseWindowUtc('2025-01-01T00:00:00');
+      const groups = new Map(), warnings = new Set();
+      table.slice(1).forEach((values, index) => {
+        const row = Object.fromEntries([...required, ...optional].map(name => [name, columns[name] < 0 ? '' : values[columns[name]]]));
+        if (!Object.hasOwn(siteCodes, row.site)) throw new Error('Unknown site for ' + row.tile_id + ': ' + row.site);
+        if (!Object.hasOwn(sessionOrder, row.session)) throw new Error('Unsupported session for ' + row.tile_id + ': ' + row.session);
+        if (!row.order_in_night || !Number.isFinite(Number(row.order_in_night))) throw new Error(row.tile_id + ': order_in_night must be numeric.');
+        const ra = row.ra_hms.match(/^(\d{1,2}):(\d{2}):(\d{2}(?:\.\d+)?)$/);
+        const dec = row.dec_dms.match(/^([+-]?\d{1,2}):(\d{2}):(\d{2}(?:\.\d+)?)$/);
+        if (!ra || !dec || Number(ra[1]) >= 24 || Number(ra[2]) >= 60 || Number(ra[3]) >= 60 ||
+            Math.abs(Number(dec[1])) > 90 || Number(dec[2]) >= 60 || Number(dec[3]) >= 60 ||
+            (Math.abs(Number(dec[1])) === 90 && (Number(dec[2]) !== 0 || Number(dec[3]) !== 0))) {
+          throw new Error(row.tile_id + ': RA or Dec is not a valid sexagesimal coordinate.');
+        }
+        const night = planningNightDate(row.session_start_ut, row.site);
+        const days = (parseWindowUtc(night + 'T00:00:00') - epoch) / 86400000;
+        if (days < 0 || days > 9999) throw new Error(row.tile_id + ': night is outside the four-digit day range.');
+        const tileIndex = row.tile_id.match(/_(\d+)$/);
+        if (!tileIndex) throw new Error(row.tile_id + ': tile_id must end with a numeric tile index.');
+        const label = siteCodes[row.site] + String(days).padStart(4, '0') + sessionCodes[row.session] + String(Number(tileIndex[1])).padStart(2, '0');
+        if (night !== row.night_ut) warnings.add(row.site + ': CSV night ' + row.night_ut + ' uses computed night ' + night + '.');
+        const key = row.site + '\t' + night;
+        if (!groups.has(key)) groups.set(key, { site: row.site, night, days, rows: [] });
+        groups.get(key).rows.push({ ...row, label, inputIndex: index });
+      });
+      const cfg = parseSet(PRESETS.find(preset => preset.id === 'solo').setFileContent);
+      const timings = new Map();
+      const files = [...groups.keys()].sort().map(key => {
+        const group = groups.get(key);
+        const night = fullNightTiming(group, byId);
+        for (const [id, timing] of night.timings) timings.set(id, timing);
+        if (group.rows.some(row => row.night_end_source === 'plot_minute')) {
+          warnings.add(group.site + ' ' + group.night + ': night end ' + night.endUtc + ' UTC comes from a minute-resolution plot.');
+        }
+        group.rows.sort((a, b) => sessionOrder[a.session] - sessionOrder[b.session] ||
+          Number(a.order_in_night) - Number(b.order_in_night) || a.inputIndex - b.inputIndex);
+        const labels = new Set();
+        const lines = ['# SOLO  site ' + group.site + '  night ' + group.night + ' (day ' + String(group.days).padStart(4, '0') +
+          ' since 2025-01-01; UT date at local midnight)  n_tiles ' + group.rows.length];
+        let session = null;
+        for (const row of group.rows) {
+          if (labels.has(row.label)) throw new Error('Duplicate label in ' + group.site + ' ' + group.night + ': ' + row.label);
+          labels.add(row.label);
+          if (row.session !== session) {
+            session = row.session;
+            const count = group.rows.filter(item => item.session === session).length;
+            lines.push('', '# ' + session + ': ' + count + ' tiles, session ' + row.session_start_ut + ' -- ' + row.session_end_ut + ' UT');
+          }
+          lines.push(padRight(row.label, 10) + ' ' + padLeft(row.ra_hms, 12) + ' ' + padLeft(row.dec_dms, 12) +
+            '  # ' + row.tile_id + '  n_targets ' + row.n_targets);
+        }
+        const catalogText = lines.join('\n') + '\n';
+        const result = compileCatalogRows(cfg, catalogText, night.timings, loopN);
+        return { name: 'scSOLO_' + group.site + '_' + group.night + '.cat', text: result.text,
+          site: group.site, night: group.night, fieldCount: result.fieldCount, catalogText,
+          nightStartUtc: night.startUtc, nightEndUtc: night.endUtc };
+      });
+      return { files, warnings: [...warnings], timings };
+    }
+
+    function openBatchModal() {
+      document.getElementById('batch-modal').classList.add('open');
+    }
+
+    function closeBatchModal() {
+      document.getElementById('batch-modal').classList.remove('open');
+      if (batchScripts.loading) {
+        batchScripts.version++;
+        batchScripts.loading = false;
+        document.getElementById('batch-status').textContent = 'CSV import cancelled.';
+      }
+    }
+
+    function previewBatchScript(index) {
+      const file = batchScripts.files[index];
+      if (!file) return;
+      document.getElementById('batch-preview-name').textContent = file.name;
+      document.getElementById('batch-preview').textContent = file.text;
+    }
+
+    function renderBatchFiles() {
+      const list = document.getElementById('batch-file-list');
+      list.replaceChildren();
+      document.getElementById('batch-preview-name').textContent = '';
+      document.getElementById('batch-preview').textContent = '';
+      document.getElementById('download-batch').disabled = batchScripts.files.length === 0;
+      document.getElementById('show-batch').style.display = batchScripts.files.length ? '' : 'none';
+      for (const [index, file] of batchScripts.files.entries()) {
+        const row = document.createElement('div');
+        row.style.cssText = 'display: flex; gap: 6px; margin-bottom: 6px; align-items: center;';
+        const preview = document.createElement('button');
+        preview.textContent = file.name + ' (' + file.fieldCount + ' fields)';
+        preview.style.cssText = 'flex: 1; min-width: 0; text-align: left; overflow-wrap: anywhere;';
+        preview.onclick = () => previewBatchScript(index);
+        const download = document.createElement('button');
+        download.textContent = 'Download';
+        download.onclick = () => downloadText(file.text, file.name);
+        row.appendChild(preview);
+        row.appendChild(download);
+        list.appendChild(row);
+      }
+      if (batchScripts.files.length) previewBatchScript(0);
+    }
+
+    function importPlanningCsv(text, fileName, loopN = 0) {
+      batchScripts.loading = false;
+      batchScripts.files = [];
+      document.getElementById('batch-warnings').textContent = '';
+      try {
+        const result = buildNightlyScripts(text, loopN);
+        batchScripts.files = result.files;
+        const count = result.files.reduce((sum, file) => sum + file.fieldCount, 0);
+        document.getElementById('batch-status').textContent = fileName + ': ' + result.files.length + ' scripts. ' + count + ' fields.';
+        document.getElementById('batch-warnings').textContent = result.warnings.join('\n');
+        document.getElementById('batch-loop-status').textContent = loopN > 0 ? 'Loop restart row: ' + loopN + '.' : 'Looping off (Loop N = 0).';
+      } catch (error) {
+        document.getElementById('batch-status').textContent = 'CSV error: ' + error.message;
+      }
+      renderBatchFiles();
+      openBatchModal();
+    }
+
+    function onPlanningFileInput(input) {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      const version = ++batchScripts.version;
+      const loopN = parseInt(document.getElementById('loop-n').value, 10) || 0;
+      batchScripts.files = [];
+      batchScripts.loading = true;
+      document.getElementById('batch-status').textContent = 'Generating nightly scripts from ' + file.name + '...';
+      document.getElementById('batch-warnings').textContent = '';
+      renderBatchFiles();
+      openBatchModal();
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (version === batchScripts.version) importPlanningCsv(String(reader.result), file.name, loopN);
+      };
+      reader.onerror = () => {
+        if (version !== batchScripts.version) return;
+        batchScripts.loading = false;
+        document.getElementById('batch-status').textContent = 'Cannot read planning CSV: ' + file.name;
+        renderBatchFiles();
+      };
+      reader.readAsText(file);
+    }
+
+    function createScriptZip(files) {
+      if (files.length > 65535) throw new Error('Too many files for a ZIP32 archive.');
+      const encoder = new TextEncoder(), localParts = [], directoryParts = [];
+      let offset = 0;
+      for (const file of files) {
+        const name = encoder.encode(file.name), data = encoder.encode(file.text);
+        if (name.length > 65535 || data.length > 0xffffffff) throw new Error('A file exceeds the ZIP32 format limit.');
+        let crc = 0xffffffff;
+        for (const byte of data) {
+          crc ^= byte;
+          for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+        }
+        crc = (crc ^ 0xffffffff) >>> 0;
+        const local = new Uint8Array(30 + name.length + data.length), view = new DataView(local.buffer);
+        view.setUint32(0, 0x04034b50, true);
+        view.setUint16(4, 20, true);
+        view.setUint16(6, 0x800, true);
+        view.setUint16(12, 0x21, true);
+        view.setUint32(14, crc, true);
+        view.setUint32(18, data.length, true);
+        view.setUint32(22, data.length, true);
+        view.setUint16(26, name.length, true);
+        local.set(name, 30);
+        local.set(data, 30 + name.length);
+        const central = new Uint8Array(46 + name.length), directory = new DataView(central.buffer);
+        directory.setUint32(0, 0x02014b50, true);
+        directory.setUint16(4, 20, true);
+        directory.setUint16(6, 20, true);
+        directory.setUint16(8, 0x800, true);
+        directory.setUint16(14, 0x21, true);
+        directory.setUint32(16, crc, true);
+        directory.setUint32(20, data.length, true);
+        directory.setUint32(24, data.length, true);
+        directory.setUint16(28, name.length, true);
+        directory.setUint32(42, offset, true);
+        central.set(name, 46);
+        localParts.push(local);
+        directoryParts.push(central);
+        offset += local.length;
+        if (offset > 0xffffffff) throw new Error('The archive exceeds the ZIP32 format limit.');
+      }
+      const directoryLength = directoryParts.reduce((sum, part) => sum + part.length, 0);
+      if (offset + directoryLength > 0xffffffff) throw new Error('The archive exceeds the ZIP32 format limit.');
+      const end = new Uint8Array(22), endView = new DataView(end.buffer);
+      endView.setUint32(0, 0x06054b50, true);
+      endView.setUint16(8, files.length, true);
+      endView.setUint16(10, files.length, true);
+      endView.setUint32(12, directoryLength, true);
+      endView.setUint32(16, offset, true);
+      const archive = new Uint8Array(offset + directoryLength + end.length);
+      let cursor = 0;
+      for (const part of [...localParts, ...directoryParts, end]) { archive.set(part, cursor); cursor += part.length; }
+      return archive;
+    }
+
+    function downloadBatchZip() {
+      if (!batchScripts.files.length) return;
+      try {
+        downloadText(createScriptZip(batchScripts.files), 'SOLO_observing_scripts.zip', 'application/zip');
+      } catch (error) {
+        document.getElementById('batch-status').textContent = 'Download error: ' + error.message;
+      }
+    }
+
+    // Coordinate Transformations & Astronomy
+    function getGMST(d) {
+      const jd = d.getTime() / 86400000 + 2440587.5;
+      let g = (280.46061837 + 360.98564736629 * (jd - 2451545.0)) % 360;
+      if (g < 0) g += 360;
+      return g / 15;
+    }
+
+    function eqToAltAz(raH, decD, d, latD, lonD) {
+      const gmst = getGMST(d);
+      let lst = (gmst + lonD / 15) % 24;
+      if (lst < 0) lst += 24;
+      let haH = lst - raH;
+      while (haH > 12) haH -= 24;
+      while (haH < -12) haH += 24;
+      const haRad = haH * 15 * RAD, decRad = decD * RAD, latRad = latD * RAD;
+      const sinAlt = Math.sin(decRad) * Math.sin(latRad) + Math.cos(decRad) * Math.cos(latRad) * Math.cos(haRad);
+      const altDeg = Math.asin(Math.max(-1, Math.min(1, sinAlt))) * DEG;
+      const cosAz = (Math.sin(decRad) - Math.sin(altDeg * RAD) * Math.sin(latRad)) / (Math.cos(altDeg * RAD) * Math.cos(latRad));
+      let azDeg = Math.acos(Math.max(-1, Math.min(1, cosAz))) * DEG;
+      if (Math.sin(haRad) > 0) azDeg = 360 - azDeg;
+      return { altDeg, azDeg };
+    }
+
+    function eqToGalactic(raH, decD) {
+      const aNGP = 192.85948 * RAD, dNGP = 27.12825 * RAD, lNCP = 122.93192 * RAD;
+      const a = raH * 15 * RAD, d = decD * RAD;
+      const sinB = Math.sin(d) * Math.sin(dNGP) + Math.cos(d) * Math.cos(dNGP) * Math.cos(a - aNGP);
+      const bDeg = Math.asin(Math.max(-1, Math.min(1, sinB))) * DEG;
+      const y = Math.cos(d) * Math.sin(a - aNGP);
+      const x = Math.sin(d) * Math.cos(dNGP) - Math.cos(d) * Math.sin(dNGP) * Math.cos(a - aNGP);
+      let lDeg = (lNCP * DEG - Math.atan2(y, x) * DEG) % 360;
+      if (lDeg < 0) lDeg += 360;
+      return { lDeg, bDeg };
+    }
+
+    function eqToEcliptic(raH, decD, date) {
+      const eps = 23.439291 * RAD;
+      const a = raH * 15 * RAD, d = decD * RAD;
+      const sinBeta = Math.sin(d) * Math.cos(eps) - Math.cos(d) * Math.sin(eps) * Math.sin(a);
+      const betaDeg = Math.asin(Math.max(-1, Math.min(1, sinBeta))) * DEG;
+      const y = Math.sin(d) * Math.sin(eps) + Math.cos(d) * Math.cos(eps) * Math.sin(a);
+      const x = Math.cos(d) * Math.cos(a);
+      let lambdaDeg = (Math.atan2(y, x) * DEG) % 360;
+      if (lambdaDeg < 0) lambdaDeg += 360;
+      return { lambdaDeg, betaDeg };
+    }
+
+    function parseTargetCoords(raStr, decStr) {
+      if (!raStr || !decStr || raStr === '-' || decStr === '-') return null;
+      const raP = raStr.split(':').map(Number);
+      const decP = decStr.split(':').map(Number);
+      if (raP.length !== 3 || decP.length !== 3 || raP.some(isNaN) || decP.some(isNaN)) return null;
+      const raH = raP[0] + raP[1] / 60 + raP[2] / 3600;
+      const isNeg = decStr.trim().startsWith('-');
+      const decD = (isNeg ? -1 : 1) * (Math.abs(decP[0]) + decP[1] / 60 + decP[2] / 3600);
+      return { raHours: raH, decDeg: decD };
+    }
+
+    function calculateSunPos(date) {
+      const jd = date.getTime() / 86400000 + 2440587.5;
+      const T = (jd - 2451545.0) / 36525;
+      const L0 = (280.46646 + 36000.76983 * T) % 360;
+      const M = (357.52911 + 35999.05029 * T) % 360;
+      const C = (1.914602 - 0.004817 * T) * Math.sin(M * RAD) + (0.019993 - 0.000101 * T) * Math.sin(2 * M * RAD);
+      const sunTL = (L0 + C + 720) % 360;
+      const eps = 23.439291 * RAD;
+      const sinDec = Math.sin(eps) * Math.sin(sunTL * RAD);
+      const decDeg = Math.asin(sinDec) * DEG;
+      const y = Math.cos(eps) * Math.sin(sunTL * RAD);
+      const x = Math.cos(sunTL * RAD);
+      const raHours = (((Math.atan2(y, x) * DEG) + 360) % 360) / 15;
+      const { altDeg, azDeg } = eqToAltAz(raHours, decDeg, date, currentSite.lat, currentSite.lon);
+      return { raHours, decDeg, altDeg, azDeg, name: 'Sun' };
+    }
+
+    function calculateMoonPos(date) {
+      const jd = date.getTime() / 86400000 + 2440587.5;
+      const d = jd - 2451545.0;
+      const T = d / 36525;
+      const Lprime = (218.316 + 13.176396 * d) % 360;
+      const Mprime = (134.963 + 13.064993 * d) % 360;
+      const M = (357.52911 + 35999.05029 * T) % 360;
+      const D = (297.850 + 12.190749 * d) % 360;
+      const F = (93.272 + 13.229350 * d) % 360;
+      const lambdaM = (Lprime + 6.289 * Math.sin(Mprime * RAD) - 1.274 * Math.sin((Mprime - 2 * D) * RAD) + 0.658 * Math.sin(2 * D * RAD) + 3600) % 360;
+      const betaM = 5.128 * Math.sin(F * RAD);
+      const eps = 23.439291 * RAD;
+      const sinDec = Math.sin(betaM * RAD) * Math.cos(eps) + Math.cos(betaM * RAD) * Math.sin(eps) * Math.sin(lambdaM * RAD);
+      const decDeg = Math.asin(sinDec) * DEG;
+      const y = Math.sin(lambdaM * RAD) * Math.cos(eps) - Math.tan(betaM * RAD) * Math.sin(eps);
+      const x = Math.cos(lambdaM * RAD);
+      const raHours = (((Math.atan2(y, x) * DEG) + 360) % 360) / 15;
+      const illum = Math.round(((1 - Math.cos(((D % 360) + 360) % 360 * RAD)) / 2) * 100);
+      const { altDeg, azDeg } = eqToAltAz(raHours, decDeg, date, currentSite.lat, currentSite.lon);
+      return { raHours, decDeg, altDeg, azDeg, illumination: illum, name: 'Moon' };
+    }
+
+    function projectPt(c1, c2, sys, proj, cx1, cx2, zoom, w, h) {
+      const cx = w / 2;
+      const cy = h / 2;
+
+      let dC1 = 0;
+      if (sys === 'equatorial') {
+        let dHours = c1 - cx1;
+        while (dHours > 12) dHours -= 24;
+        while (dHours < -12) dHours += 24;
+        dC1 = dHours * 15 * RAD;
+      } else {
+        let dDeg = c1 - cx1;
+        while (dDeg > 180) dDeg -= 360;
+        while (dDeg < -180) dDeg += 360;
+        dC1 = dDeg * RAD;
+      }
+
+      const isAltAz = (sys === 'altaz');
+      const lambda = isAltAz ? dC1 : -dC1;
+      const phi = c2 * RAD;
+      const phi0 = cx2 * RAD;
+
+      if (proj === 'equirectangular') {
+        const sx = (w * 0.9 * zoom) / (2 * Math.PI);
+        const sy = (h * 0.85 * zoom) / Math.PI;
+        const x = cx + lambda * sx;
+        const y = cy - (c2 - cx2) * RAD * sy;
+        return { x, y, visible: true };
+      }
+      if (proj === 'mollweide') {
+        let theta = phi;
+        for (let i = 0; i < 8; i++) {
+          const num = 2 * theta + Math.sin(2 * theta) - Math.PI * Math.sin(phi);
+          const den = 2 + 2 * Math.cos(2 * theta);
+          const delta = num / den;
+          theta -= delta;
+          if (Math.abs(delta) < 1e-6) break;
+        }
+        // Unit Mollweide ellipse: |px| <= 2*sqrt(2), |py| <= sqrt(2); map onto rX x rY.
+        const px = (2 * Math.SQRT2 / Math.PI) * lambda * Math.cos(theta);
+        const py = Math.SQRT2 * Math.sin(theta);
+        const rX = w * 0.44 * zoom;
+        const rY = h * 0.42 * zoom;
+        const x = cx + px * (rX / (2 * Math.SQRT2));
+        const y = cy - py * (rY / Math.SQRT2);
+        return { x, y, visible: true };
+      }
+      if (proj === 'orthographic') {
+        if (isAltAz) {
+          const r = Math.min(w, h) * 0.42 * zoom;
+          const zDist = Math.max(0, 90 - c2) * RAD;
+          const azRad = c1 * RAD;
+          const x = cx - Math.sin(zDist) * Math.sin(azRad) * r;
+          const y = cy - Math.sin(zDist) * Math.cos(azRad) * r;
+          return { x, y, visible: c2 >= -5 };
+        }
+        const cosC = Math.sin(phi0) * Math.sin(phi) + Math.cos(phi0) * Math.cos(phi) * Math.cos(lambda);
+        const r = Math.min(w, h) * 0.42 * zoom;
+        const px = Math.cos(phi) * Math.sin(lambda);
+        const py = Math.cos(phi0) * Math.sin(phi) - Math.sin(phi0) * Math.cos(phi) * Math.cos(lambda);
+        return { x: cx + px * r, y: cy - py * r, visible: cosC >= 0 };
+      }
+      return { x: cx, y: cy, visible: true };
+    }
+
+    function toSystem(raH, decD) {
+      if (mapCoordSys === 'equatorial') return { c1: raH, c2: decD };
+      if (mapCoordSys === 'altaz') {
+        const h = eqToAltAz(raH, decD, obsDate, currentSite.lat, currentSite.lon);
+        return { c1: h.azDeg, c2: h.altDeg };
+      }
+      if (mapCoordSys === 'galactic') {
+        const g = eqToGalactic(raH, decD);
+        return { c1: g.lDeg, c2: g.bDeg };
+      }
+      if (mapCoordSys === 'ecliptic') {
+        const e = eqToEcliptic(raH, decD, obsDate);
+        return { c1: e.lambdaDeg, c2: e.betaDeg };
+      }
+      return { c1: raH, c2: decD };
+    }
+
+    function renderSkyMap() {
+      const svg = document.getElementById('sky-svg');
+      if (!svg) return;
+      // AltAz is always the orthographic local-sky dome; other systems use equirect or Mollweide.
+      const projSel = document.getElementById('map-proj').value;
+      const proj = mapCoordSys === 'altaz' ? 'orthographic'
+        : (projSel === 'mollweide' ? 'mollweide' : 'equirectangular');
+      const showGal = document.getElementById('chk-gal').checked;
+      const showEcl = document.getElementById('chk-ecl').checked;
+      const showHoriz = document.getElementById('chk-horiz').checked;
+      const showSun = document.getElementById('chk-sun').checked;
+      const showMoon = document.getElementById('chk-moon').checked;
+      const showLabels = document.getElementById('chk-labels').checked;
+      const showCompass = document.getElementById('chk-compass').checked;
+      const showMoonZone = document.getElementById('chk-moon-zone').checked;
+      const moonZoneDeg = parseFloat(document.getElementById('rng-moon-zone').value) || 30;
+
+      const w = 600, h = 270;
+      svg.innerHTML = '';
+
+      // Update Twilight & Moon Badges
+      const sun = calculateSunPos(obsDate);
+      const moon = calculateMoonPos(obsDate);
+
+      const twBadge = document.getElementById('site-twilight-badge');
+      if (twBadge) {
+        if (sun.altDeg > 0) {
+          twBadge.textContent = '☀️ Daylight (Sun +' + sun.altDeg.toFixed(1) + '°)';
+          twBadge.style.color = '#FACC15';
+        } else if (sun.altDeg > -6) {
+          twBadge.textContent = '🌅 Civil Twilight (Sun ' + sun.altDeg.toFixed(1) + '°)';
+          twBadge.style.color = '#FB923C';
+        } else if (sun.altDeg > -12) {
+          twBadge.textContent = '🌌 Nautical Twilight (Sun ' + sun.altDeg.toFixed(1) + '°)';
+          twBadge.style.color = '#A855F7';
+        } else if (sun.altDeg > -18) {
+          twBadge.textContent = '✨ Astro Twilight (Sun ' + sun.altDeg.toFixed(1) + '°)';
+          twBadge.style.color = '#818CF8';
+        } else {
+          twBadge.textContent = '🌑 Dark Night (Sun ' + sun.altDeg.toFixed(1) + '°)';
+          twBadge.style.color = '#10B981';
+        }
+      }
+
+      const mnBadge = document.getElementById('site-moon-badge');
+      if (mnBadge) {
+        mnBadge.textContent = 'Moon: ' + (moon.altDeg > 0 ? '+' : '') + moon.altDeg.toFixed(0) + '° (' + (moon.altDeg > 0 ? 'Up' : 'Set') + ', ' + moon.illumination + '%)';
+        mnBadge.style.color = moon.altDeg > 0 ? 'var(--sky)' : 'var(--text-muted)';
+      }
+
+      // Background rect
+      const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bgRect.setAttribute('width', w);
+      bgRect.setAttribute('height', h);
+      bgRect.setAttribute('fill', '#050811');
+      svg.appendChild(bgRect);
+
+      // AltAz dome: tint the sky by Sun altitude (standard 0/-6/-12/-18 deg twilight limits),
+      // brightest toward the Sun's azimuth.
+      if (proj === 'orthographic') {
+        const sky = sun.altDeg > 0 ? ['250, 204, 21', 0.30]      // day: yellow
+          : sun.altDeg > -6 ? ['245, 158, 11', 0.28]             // civil: gold
+          : sun.altDeg > -12 ? ['217, 119, 6', 0.18]             // nautical: deep gold
+          : sun.altDeg > -18 ? ['180, 83, 9', 0.10]              // astronomical: faint amber
+          : null;                                                // night: no tint
+        if (sky) {
+          const rad = Math.min(w, h) * 0.42 * mapZoom;
+          // Sun position on the dome; below the horizon, use the rim point at its azimuth.
+          const zDist = Math.min(90, 90 - sun.altDeg) * RAD;
+          const sx = w / 2 - Math.sin(zDist) * Math.sin(sun.azDeg * RAD) * rad;
+          const sy = h / 2 - Math.sin(zDist) * Math.cos(sun.azDeg * RAD) * rad;
+          const ns = 'http://www.w3.org/2000/svg';
+          const defs = document.createElementNS(ns, 'defs');
+          defs.innerHTML = '<radialGradient id="sky-tint" gradientUnits="userSpaceOnUse" cx="' + sx + '" cy="' + sy + '" r="' + (2 * rad) + '">' +
+            '<stop offset="0" stop-color="rgb(' + sky[0] + ')" stop-opacity="' + sky[1] + '"/>' +
+            '<stop offset="1" stop-color="rgb(' + sky[0] + ')" stop-opacity="' + (sky[1] * 0.3) + '"/>' +
+            '</radialGradient>';
+          svg.appendChild(defs);
+          const dome = document.createElementNS(ns, 'circle');
+          dome.setAttribute('cx', w / 2);
+          dome.setAttribute('cy', h / 2);
+          dome.setAttribute('r', rad);
+          dome.setAttribute('fill', 'url(#sky-tint)');
+          svg.appendChild(dome);
+        }
+      }
+
+      // Grid Lines & Numerical Values
+      if (proj === 'equirectangular') {
+        const c2Vals = mapCoordSys === 'altaz' ? [0, 30, 60] : [-60, -30, 0, 30, 60];
+        c2Vals.forEach(val => {
+          const p = projectPt(0, val, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', '0');
+          line.setAttribute('y1', p.y);
+          line.setAttribute('x2', w);
+          line.setAttribute('y2', p.y);
+          line.setAttribute('stroke', val === 0 ? 'rgba(56, 189, 248, 0.45)' : 'rgba(255, 255, 255, 0.1)');
+          line.setAttribute('stroke-dasharray', val === 0 ? '' : '2 3');
+          svg.appendChild(line);
+
+          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', '16');
+          txt.setAttribute('y', p.y - 3);
+          txt.setAttribute('font-size', '9');
+          txt.setAttribute('font-family', 'monospace');
+          txt.setAttribute('fill', '#94A3B8');
+          txt.setAttribute('font-weight', 'bold');
+          txt.textContent = val > 0 ? '+' + val + '°' : val + '°';
+          svg.appendChild(txt);
+        });
+
+        const c1Vals = mapCoordSys === 'equatorial' ? [0, 3, 6, 9, 12, 15, 18, 21] : [0, 60, 120, 180, 240, 300];
+        c1Vals.forEach(val => {
+          const p = projectPt(val, 0, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', p.x);
+          line.setAttribute('y1', '0');
+          line.setAttribute('x2', p.x);
+          line.setAttribute('y2', h);
+          line.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
+          line.setAttribute('stroke-dasharray', '2 3');
+          svg.appendChild(line);
+
+          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', p.x);
+          txt.setAttribute('y', h - 4);
+          txt.setAttribute('text-anchor', 'middle');
+          txt.setAttribute('font-size', '9');
+          txt.setAttribute('font-family', 'monospace');
+          txt.setAttribute('fill', '#94A3B8');
+          txt.setAttribute('font-weight', 'bold');
+          txt.textContent = mapCoordSys === 'equatorial' ? val + 'h' : val + '°';
+          svg.appendChild(txt);
+        });
+      } else if (proj === 'mollweide') {
+        // Parallels and meridians are curves here, so sample them through projectPt.
+        const ns = 'http://www.w3.org/2000/svg';
+        const span = mapCoordSys === 'equatorial' ? 24 : 360;
+        const half = span / 2 * (1 - 1e-6);  // stay just inside the +-180 deg seam
+        const addPath = (d, major) => {
+          const path = document.createElementNS(ns, 'path');
+          path.setAttribute('d', d);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', major ? 'rgba(56, 189, 248, 0.45)' : 'rgba(255, 255, 255, 0.12)');
+          if (!major) path.setAttribute('stroke-dasharray', '2 3');
+          svg.appendChild(path);
+        };
+        const addText = (x, y, s, anchor) => {
+          const txt = document.createElementNS(ns, 'text');
+          txt.setAttribute('x', x);
+          txt.setAttribute('y', y);
+          txt.setAttribute('text-anchor', anchor);
+          txt.setAttribute('font-size', '9');
+          txt.setAttribute('font-family', 'monospace');
+          txt.setAttribute('fill', '#94A3B8');
+          txt.setAttribute('font-weight', 'bold');
+          txt.textContent = s;
+          svg.appendChild(txt);
+        };
+        const pt = (c1, c2) => projectPt(c1, c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+
+        [-60, -30, 0, 30, 60].forEach(val => {
+          let d = '';
+          for (let k = 0; k <= 120; k++) {
+            const p = pt(mapCenterC1 - half + (2 * half) * k / 120, val);
+            d += (k ? 'L ' : 'M ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ';
+          }
+          addPath(d, val === 0);
+          const pL = pt(mapCenterC1 + half, val);  // +c1 side is drawn on the left
+          addText(pL.x - 3, pL.y + 3, (val > 0 ? '+' : '') + val + '°', 'end');
+        });
+
+        const c1Vals = mapCoordSys === 'equatorial' ? [0, 3, 6, 9, 12, 15, 18, 21] : [0, 60, 120, 180, 240, 300];
+        c1Vals.forEach(val => {
+          let diff = (val - mapCenterC1) % span;
+          if (diff > span / 2) diff -= span;
+          if (diff < -span / 2) diff += span;
+          if (Math.abs(diff) >= half) return;  // meridian on the seam = the outline itself
+          let d = '';
+          for (let k = 0; k <= 60; k++) {
+            const p = pt(val, -90 + 180 * k / 60);
+            d += (k ? 'L ' : 'M ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ';
+          }
+          addPath(d, false);
+          const pE = pt(val, 0);
+          addText(pE.x, pE.y + 11, mapCoordSys === 'equatorial' ? val + 'h' : val + '°', 'middle');
+        });
+      }
+
+      // Orthographic View Boundaries & Compass Points (N, S, E, W by default)
+      if (proj === 'orthographic') {
+        const rad = Math.min(w, h) * 0.42 * mapZoom;
+        const ci = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ci.setAttribute('cx', w / 2);
+        ci.setAttribute('cy', h / 2);
+        ci.setAttribute('r', rad);
+        ci.setAttribute('fill', 'none');
+        ci.setAttribute('stroke', mapCoordSys === 'altaz' ? '#10B981' : 'rgba(56, 189, 248, 0.4)');
+        ci.setAttribute('stroke-width', '1.5');
+        svg.appendChild(ci);
+
+        if (mapCoordSys === 'altaz') {
+          // Alt 30 and 60 concentric circles
+          [30, 60].forEach(alt => {
+            const rAlt = rad * ((90 - alt) / 90);
+            const ac = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            ac.setAttribute('cx', w / 2);
+            ac.setAttribute('cy', h / 2);
+            ac.setAttribute('r', rAlt);
+            ac.setAttribute('fill', 'none');
+            ac.setAttribute('stroke', 'rgba(255, 255, 255, 0.12)');
+            ac.setAttribute('stroke-dasharray', '2 3');
+            svg.appendChild(ac);
+          });
+        }
+
+        // Compass (North, East, South, West)
+        if (showCompass) {
+          const compG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          compG.setAttribute('font-family', 'sans-serif');
+          compG.setAttribute('font-weight', 'bold');
+          compG.innerHTML =
+            '<g transform="translate(' + (w/2) + ',' + (h/2 - rad - 8) + ')"><circle r="8" fill="#0F172A" stroke="#38BDF8"/><text text-anchor="middle" y="3" font-size="9" fill="#38BDF8">N</text></g>' +
+            '<g transform="translate(' + (w/2) + ',' + (h/2 + rad + 10) + ')"><circle r="8" fill="#0F172A" stroke="#94A3B8"/><text text-anchor="middle" y="3" font-size="9" fill="#E2E8F0">S</text></g>' +
+            '<g transform="translate(' + (w/2 - rad - 10) + ',' + (h/2) + ')"><circle r="8" fill="#0F172A" stroke="#94A3B8"/><text text-anchor="middle" y="3" font-size="9" fill="#E2E8F0">E</text></g>' +
+            '<g transform="translate(' + (w/2 + rad + 10) + ',' + (h/2) + ')"><circle r="8" fill="#0F172A" stroke="#94A3B8"/><text text-anchor="middle" y="3" font-size="9" fill="#E2E8F0">W</text></g>';
+          svg.appendChild(compG);
+        }
+      } else if (proj === 'mollweide') {
+        const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        el.setAttribute('cx', w / 2);
+        el.setAttribute('cy', h / 2);
+        el.setAttribute('rx', w * 0.44 * mapZoom);
+        el.setAttribute('ry', h * 0.42 * mapZoom);
+        el.setAttribute('fill', 'none');
+        el.setAttribute('stroke', 'rgba(255, 255, 255, 0.25)');
+        svg.appendChild(el);
+      }
+
+      // Draw Local Site Horizon (Alt = 0)
+      if (showHoriz && mapCoordSys !== 'altaz') {
+        const gmst = getGMST(obsDate);
+        const lst = (gmst + currentSite.lon / 15) % 24;
+        const latR = currentSite.lat * RAD;
+        let dStr = '', isDraw = false, prev = null;
+        for (let azD = 0; azD <= 360; azD += 3) {
+          const azR = azD * RAD;
+          const decD = Math.asin(Math.max(-1, Math.min(1, -Math.cos(latR) * Math.cos(azR)))) * DEG;
+          const haH = ((Math.atan2(-Math.sin(azR), Math.sin(latR) * Math.cos(azR)) * DEG + 360) % 360) / 15;
+          let raH = (lst - haH + 24) % 24;
+          const sc = toSystem(raH, decD);
+          const p = projectPt(sc.c1, sc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+          if (!p.visible) { isDraw = false; continue; }
+          if (isDraw && Math.hypot(p.x - prev.x, p.y - prev.y) > w * 0.35) isDraw = false;
+          dStr += (!isDraw ? 'M ' : 'L ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ';
+          isDraw = true;
+          prev = p;
+        }
+        if (dStr) {
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', dStr);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', '#10B981');
+          path.setAttribute('stroke-width', '1.3');
+          path.setAttribute('stroke-dasharray', '4 2');
+          svg.appendChild(path);
+        }
+      }
+
+      // Draw Galactic Plane (Indigo #818CF8)
+      if (showGal) {
+        const aNGP = 192.85948 * RAD, dNGP = 27.12825 * RAD, lNCP = 122.93192 * RAD;
+        let dStr = '', isDraw = false, prev = null;
+        for (let lD = 0; lD <= 360; lD += 3) {
+          const lR = lD * RAD;
+          const decD = Math.asin(Math.cos(dNGP) * Math.sin(lR - lNCP)) * DEG;
+          const y = Math.cos(lR - lNCP);
+          const x = -Math.sin(dNGP) * Math.sin(lR - lNCP);
+          const raH = (((aNGP + Math.atan2(y, x)) * DEG + 720) % 360) / 15;
+          const sc = toSystem(raH, decD);
+          const p = projectPt(sc.c1, sc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+          if (!p.visible) { isDraw = false; continue; }
+          if (isDraw && Math.hypot(p.x - prev.x, p.y - prev.y) > w * 0.35) isDraw = false;
+          dStr += (!isDraw ? 'M ' : 'L ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ';
+          isDraw = true;
+          prev = p;
+        }
+        if (dStr) {
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', dStr);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', '#818CF8');
+          path.setAttribute('stroke-width', '1.3');
+          path.setAttribute('stroke-dasharray', '4 2');
+          svg.appendChild(path);
+        }
+      }
+
+      // Draw Ecliptic Plane (Amber #F59E0B)
+      if (showEcl) {
+        const eps = 23.44 * RAD;
+        let dStr = '', isDraw = false, prev = null;
+        for (let lon = 0; lon <= 360; lon += 3) {
+          const lam = lon * RAD;
+          const decD = Math.asin(Math.sin(eps) * Math.sin(lam)) * DEG;
+          const raH = (((Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam)) * DEG) + 360) % 360) / 15;
+          const sc = toSystem(raH, decD);
+          const p = projectPt(sc.c1, sc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+          if (!p.visible) { isDraw = false; continue; }
+          if (isDraw && Math.hypot(p.x - prev.x, p.y - prev.y) > w * 0.35) isDraw = false;
+          dStr += (!isDraw ? 'M ' : 'L ') + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ';
+          isDraw = true;
+          prev = p;
+        }
+        if (dStr) {
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', dStr);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', '#F59E0B');
+          path.setAttribute('stroke-width', '1.3');
+          path.setAttribute('stroke-dasharray', '3 3');
+          svg.appendChild(path);
+        }
+      }
+
+      // Galactic Center (Indigo #818CF8)
+      const gcSc = toSystem(17.76, -29.0);
+      const gcP = projectPt(gcSc.c1, gcSc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+      if (gcP.visible) {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', 'translate(' + gcP.x + ',' + gcP.y + ')');
+        g.innerHTML = '<circle r="7" fill="none" stroke="#818CF8" stroke-width="1" stroke-dasharray="2 2"/>' +
+          '<circle r="2.5" fill="#818CF8"/>' +
+          '<text x="9" y="3" font-size="8" fill="#818CF8" font-family="sans-serif">Galactic Center</text>';
+        svg.appendChild(g);
+      }
+
+      // Moon & Moon Avoidance Zone
+      if (showMoon) {
+        const mSc = toSystem(moon.raHours, moon.decDeg);
+        const mp = projectPt(mSc.c1, mSc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+        if (mp.visible) {
+          if (showMoonZone) {
+            const zPx = (moonZoneDeg / 180) * (h * 0.85 * mapZoom);
+            const zc = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            zc.setAttribute('cx', mp.x);
+            zc.setAttribute('cy', mp.y);
+            zc.setAttribute('r', zPx);
+            zc.setAttribute('fill', 'rgba(244, 63, 94, 0.08)');
+            zc.setAttribute('stroke', 'rgba(244, 63, 94, 0.4)');
+            zc.setAttribute('stroke-dasharray', '3 3');
+            svg.appendChild(zc);
+          }
+          const mg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          mg.setAttribute('transform', 'translate(' + mp.x + ',' + mp.y + ')');
+          mg.innerHTML = '<circle r="10" fill="rgba(56, 189, 248, 0.2)"/><circle r="5" fill="#E0F2FE" stroke="#38BDF8"/>' +
+            '<text x="12" y="3" font-size="8" fill="#38BDF8" font-family="sans-serif">Moon (' + moon.illumination + '%)</text>';
+          svg.appendChild(mg);
+        }
+      }
+
+      // Sun
+      if (showSun) {
+        const sSc = toSystem(sun.raHours, sun.decDeg);
+        const sp = projectPt(sSc.c1, sSc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+        if (sp.visible) {
+          const sg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          sg.setAttribute('transform', 'translate(' + sp.x + ',' + sp.y + ')');
+          sg.innerHTML = '<circle r="12" fill="rgba(234, 179, 8, 0.2)"/><circle r="6" fill="#EAB308" stroke="#CA8A04"/>' +
+            '<text x="14" y="3" font-size="8" fill="#FACC15" font-family="sans-serif">Sun</text>';
+          svg.appendChild(sg);
+        }
+      }
+
+      // Targets
+      const cfg = parseSet(document.getElementById('set-text').value) || { cLabel: 1, cRA: 2, cDEC: 3 };
+      const catLines = document.getElementById('cat-text').value.split(/\r?\n/);
+      const targets = [];
+      for (const line of catLines) {
+        const noC = line.split(/[#=]/)[0].trim();
+        if (!noC) continue;
+        const tokens = ['-', ...noC.split(/\s+/).filter(Boolean)];
+        const name = tokens[cfg.cLabel] || 'Target';
+        const c = parseTargetCoords(tokens[cfg.cRA], tokens[cfg.cDEC]);
+        if (c) targets.push({ name, raHours: c.raHours, decDeg: c.decDeg, raStr: tokens[cfg.cRA], decStr: tokens[cfg.cDEC] });
+      }
+
+      const tooltip = document.getElementById('map-tooltip');
+      targets.forEach(t => {
+        const sc = toSystem(t.raHours, t.decDeg);
+        const p = projectPt(sc.c1, sc.c2, mapCoordSys, proj, mapCenterC1, mapCenterC2, mapZoom, w, h);
+        if (!p.visible) return;
+
+        const { altDeg, azDeg } = eqToAltAz(t.raHours, t.decDeg, obsDate, currentSite.lat, currentSite.lon);
+        const isUp = altDeg >= 0;
+
+        const tg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        tg.style.cursor = 'pointer';
+
+        let inner = '<circle cx="' + p.x + '" cy="' + p.y + '" r="5" fill="' + (isUp ? 'rgba(56, 189, 248, 0.35)' : 'rgba(148, 163, 184, 0.2)') + '"/>' +
+                    '<circle cx="' + p.x + '" cy="' + p.y + '" r="2.5" fill="' + (isUp ? '#38BDF8' : '#64748B') + '" stroke="' + (isUp ? '#0284C7' : '#475569') + '"/>';
+        if (showLabels) {
+          inner += '<text x="' + (p.x + 5) + '" y="' + (p.y - 4) + '" font-size="8" fill="' + (isUp ? '#94A3B8' : '#64748B') + '" font-family="monospace">' + t.name + '</text>';
+        }
+        tg.innerHTML = inner;
+
+        tg.addEventListener('mouseenter', () => {
+          tooltip.style.display = 'block';
+          const raDeg = (t.raHours * 15).toFixed(6);
+          const decDeg = t.decDeg.toFixed(6);
+          tooltip.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">' +
+                              '<strong style="color: var(--sky);">' + t.name + '</strong>' +
+                              '<span style="font-size: 8px; opacity: 0.8; color: var(--sky);">Click to copy</span></div>' +
+                              '<div style="margin-top: 3px; line-height: 1.4;">' +
+                              'RA: ' + t.raStr + ' (' + raDeg + '°)<br>' +
+                              'Dec: ' + t.decStr + ' (' + decDeg + '°)<br>' +
+                              currentSite.code + ': <strong>Alt ' + (altDeg > 0 ? '+' : '') + altDeg.toFixed(2) + '°, Az ' + azDeg.toFixed(2) + '°</strong> (' + (isUp ? 'Observable' : 'Below Horizon') + ')' +
+                              '</div>';
+        });
+        tg.addEventListener('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
+
+        tg.addEventListener('click', () => {
+          const raDeg = (t.raHours * 15).toFixed(6);
+          const decDeg = t.decDeg.toFixed(6);
+          const altSign = altDeg >= 0 ? '+' : '';
+          const status = isUp ? 'Observable' : 'Below Horizon';
+          const copyStr = 'Target: ' + t.name + '\n' +
+                          'RA: ' + t.raStr + ' (' + raDeg + '°)\n' +
+                          'Dec: ' + t.decStr + ' (' + decDeg + '°)\n' +
+                          'Site: ' + currentSite.code + '\n' +
+                          'Alt: ' + altSign + altDeg.toFixed(4) + '°, Az: ' + azDeg.toFixed(4) + '° (' + status + ')\n' +
+                          'Time: ' + obsDate.toISOString().slice(0, 19).replace('T', ' ') + ' UTC';
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(copyStr);
+          }
+          const toast = document.getElementById('map-toast');
+          if (toast) {
+            toast.textContent = '✓ Copied ' + t.name + ' coordinates (' + raDeg + '°, ' + decDeg + '°) to clipboard!';
+            toast.style.display = 'block';
+            if (window._toastTimer) clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 2800);
+          }
+        });
+
+        svg.appendChild(tg);
+      });
+    }
+
+    function onCoordSystemChange() {
+      mapCoordSys = document.getElementById('map-sys').value;
+      const projSel = document.getElementById('map-proj');
+      // AltAz -> locked orthographic dome; others -> equirect (Mollweide optional).
+      projSel.disabled = mapCoordSys === 'altaz';
+      if (mapCoordSys === 'altaz') {
+        projSel.value = 'orthographic';
+        mapCenterC1 = 180;
+        mapCenterC2 = 45;
+      } else {
+        if (projSel.value === 'orthographic') projSel.value = 'equirectangular';
+        mapCenterC1 = (mapCoordSys === 'equatorial' ? 12 : 180);
+        mapCenterC2 = 0;
+      }
+      renderSkyMap();
+    }
+
+    function onSiteChange() {
+      const code = document.getElementById('site-select').value;
+      if (SITES[code]) {
+        currentSite = SITES[code];
+        renderSkyMap();
+      }
+    }
+
+    // Sky Map Interactions (Dragging & Zoom)
+    function setupSkyMapInteractions() {
+      const svg = document.getElementById('sky-svg');
+      if (!svg) return;
+
+      svg.addEventListener('mousedown', e => {
+        isDragging = true;
+        svg.style.cursor = 'grabbing';
+        dragStart = { x: e.clientX, y: e.clientY, startC1: mapCenterC1, startC2: mapCenterC2 };
+      });
+
+      window.addEventListener('mousemove', e => {
+        if (!isDragging || !dragStart) return;
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        const span1 = mapCoordSys === 'equatorial' ? 24 : 360;
+        const c1Shift = (dx / (600 * mapZoom)) * span1;
+        const c2Shift = (dy / (270 * mapZoom)) * 120;
+        let newC1 = (dragStart.startC1 + c1Shift) % span1;
+        if (newC1 < 0) newC1 += span1;
+        mapCenterC1 = newC1;
+        mapCenterC2 = Math.max(-85, Math.min(85, dragStart.startC2 + c2Shift));
+        renderSkyMap();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          svg.style.cursor = 'grab';
+          dragStart = null;
+        }
+      });
+
+      svg.addEventListener('wheel', e => {
+        e.preventDefault();
+        zoomMap(e.deltaY < 0 ? 1.15 : 0.85);
+      });
+    }
+
+    function zoomMap(factor) {
+      mapZoom = Math.max(0.6, Math.min(4.0, mapZoom * factor));
+      renderSkyMap();
+    }
+
+    function resetMapView() {
+      mapCenterC1 = (mapCoordSys === 'equatorial' ? 12.0 : 180.0);
+      mapCenterC2 = (mapCoordSys === 'altaz' ? 45.0 : 0.0);
+      mapZoom = 1.0;
+      renderSkyMap();
+    }
+
+    function shiftMapTime(sec) {
+      obsDate = new Date(obsDate.getTime() + sec * 1000);
+      syncTimeInput();
+      renderSkyMap();
+    }
+
+    function setMapNow() {
+      obsDate = new Date();
+      syncTimeInput();
+      renderSkyMap();
+    }
+
+    function updateObservationDate(d) {
+      if (!isNaN(d.getTime())) {
+        obsDate = d;
+        renderSkyMap();
+      }
+    }
+
+    function syncTimeInput() {
+      const inp = document.getElementById('map-time');
+      if (inp) inp.value = obsDate.toISOString().slice(0, 16);
+    }
+
+    // Tabs, Modals & Table Operations
+    function setCatTab(tab) {
+      const rawC = document.getElementById('cat-raw-container');
+      const tblC = document.getElementById('cat-table-container');
+      const mapC = document.getElementById('cat-map-container');
+      const bRaw = document.getElementById('btn-cat-raw');
+      const bTbl = document.getElementById('btn-cat-table');
+      const bMap = document.getElementById('btn-cat-map');
+
+      rawC.style.display = tab === 'raw' ? 'flex' : 'none';
+      if (tblC) tblC.style.display = tab === 'table' ? 'flex' : 'none';
+      mapC.style.display = tab === 'map' ? 'flex' : 'none';
+
+      bRaw.classList.toggle('active', tab === 'raw');
+      if (bTbl) bTbl.classList.toggle('active', tab === 'table');
+      bMap.classList.toggle('active', tab === 'map');
+
+      if (tab === 'table') {
+        renderCatTable();
+      } else if (tab === 'map') {
+        syncTimeInput();
+        renderSkyMap();
+      }
+    }
+
+    function renderCatTable() {
+      const tbody = document.getElementById('cat-table-body');
+      if (!tbody) return;
+      const catText = document.getElementById('cat-text').value;
+      const rawLines = catText.split(/\r?\n/);
+      const rows = [];
+      for (const line of rawLines) {
+        const noComm = line.split(/[#=]/)[0].trim();
+        if (noComm.length === 0) continue;
+        const cols = ['-', ...noComm.split(/\s+/).filter(Boolean)];
+        while (cols.length <= 50) cols.push('-');
+        rows.push(cols);
+      }
+
+      const countEl = document.getElementById('cat-table-count');
+      if (countEl) countEl.textContent = rows.length + ' targets';
+
+      tbody.innerHTML = '';
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="padding: 24px; text-align: center; color: var(--text-muted);">' +
+          'No catalog targets found. <button onclick="openPasteModal()" class="primary" style="margin-left: 8px;">📋 Paste Excel / CSV</button>' +
+          '</td></tr>';
+        return;
+      }
+
+      rows.forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+        tr.style.cursor = 'default';
+        tr.onmouseenter = () => { tr.style.background = 'rgba(255,255,255,0.04)'; };
+        tr.onmouseleave = () => { tr.style.background = 'transparent'; };
+
+        const c = parseTargetCoords(r[2], r[3]);
+        const isValid = c !== null;
+
+        const raDeg = c ? (c.raHours * 15).toFixed(4) + '°' : '';
+        const decDeg = c ? c.decDeg.toFixed(4) + '°' : '';
+
+        tr.innerHTML =
+          '<td style="padding: 5px 8px; text-align: center; color: var(--text-muted); font-size: 10px;">' + (idx + 1) + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--text); font-weight: 600;">' + (r[1] || '-') + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--emerald);" title="' + raDeg + '">' + (r[2] || '-') + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--indigo);" title="' + decDeg + '">' + (r[3] || '-') + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--text-muted);">' + (r[4] || '-') + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--text-muted);">' + (r[5] || '-') + '</td>' +
+          '<td style="padding: 5px 8px; color: var(--text-muted);">' + (r[6] || '-') + '</td>' +
+          '<td style="padding: 5px 8px;">' +
+            (isValid
+              ? '<span style="color: var(--emerald); font-size: 9px; background: rgba(16, 185, 129, 0.1); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(16, 185, 129, 0.25);">Valid</span>'
+              : '<span style="color: var(--amber); font-size: 9px; background: rgba(245, 158, 11, 0.1); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(245, 158, 11, 0.25);">Check</span>') +
+          '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addSampleTargetRow() {
+      const cat = document.getElementById('cat-text');
+      const count = cat.value.split(/\r?\n/).filter(l => l.trim() && !l.trim().startsWith('#')).length;
+      cat.value = cat.value.trimEnd() + '\nTARGET_' + (count + 1) + '      12:00:00 -30:00:00\n';
+      compileScript();
+      renderCatTable();
+    }
+
+    // Paste Excel / CSV Table Modal Logic
+    let parsedPasteData = { rows: [], headers: [], delimiter: '\t', hasHeader: false };
+
+    function openPasteModal(initialText) {
+      const modal = document.getElementById('paste-modal');
+      const input = document.getElementById('paste-input-text');
+      if (initialText !== undefined) {
+        input.value = initialText;
+      }
+      modal.classList.add('open');
+      onPasteInputChanged();
+      input.focus();
+    }
+
+    function closePasteModal() {
+      document.getElementById('paste-modal').classList.remove('open');
+    }
+
+    function loadSamplePasteData() {
+      const sample = 'Target Name\tRA (J2000)\tDec (J2000)\tFilter\tExpTime\n' +
+        'ZN2442-2\t07:29:00\t-69:50:00\tV\t60\n' +
+        'ZN2640-1\t08:33:20\t-55:35:00\tV\t60\n' +
+        'ZN2525-2\t08 03 04.2\t-11 35 15\tB\t120\n' +
+        'ZN2559-2\t08:19:05.1\t-27:50:00\tI\t60\n' +
+        'BLG_01\t17:55:24\t-30:00:00\tI\t60';
+      document.getElementById('paste-input-text').value = sample;
+      document.getElementById('paste-delim-sel').value = 'auto';
+      onPasteInputChanged();
+    }
+
+    function detectPasteDelimiter(text) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0 && !l.trim().startsWith('#')).slice(0, 8);
+      if (lines.length === 0) return '\t';
+      let tabCount = 0, commaCount = 0, semiCount = 0;
+      for (const line of lines) {
+        tabCount += (line.match(/\t/g) || []).length;
+        commaCount += (line.match(/,/g) || []).length;
+        semiCount += (line.match(/;/g) || []).length;
+      }
+      if (tabCount >= lines.length) return '\t';
+      if (commaCount >= lines.length) return ',';
+      if (semiCount >= lines.length) return ';';
+      if (tabCount > 0) return '\t';
+      if (commaCount > 0) return ',';
+      return 'whitespace';
+    }
+
+    function normalizeCoordStr(val, isDec) {
+      if (!val || val === '-') return '-';
+      let clean = String(val).trim();
+      // standard hh:mm:ss
+      if (/^[+-]?\d{1,2}:\d{1,2}:\d{1,2}(\.\d+)?$/.test(clean)) {
+        const isNeg = clean.startsWith('-');
+        const parts = clean.replace(/^[+-]/, '').split(':');
+        const hOrD = String(parseInt(parts[0], 10)).padStart(2, '0');
+        const m = String(parseInt(parts[1], 10)).padStart(2, '0');
+        const s = String(Math.floor(parseFloat(parts[2]))).padStart(2, '0');
+        return isDec ? (isNeg ? '-' : '+') + hOrD + ':' + m + ':' + s : hOrD + ':' + m + ':' + s;
+      }
+      // space separated: 12 34 56
+      const sp = clean.split(/\s+/).filter(Boolean);
+      if (sp.length >= 2 && sp.length <= 4) {
+        const isNeg = clean.startsWith('-');
+        const hOrD = String(parseInt(sp[0].replace(/^[+-]/, ''), 10)).padStart(2, '0');
+        const m = String(parseInt(sp[1], 10) || 0).padStart(2, '0');
+        const s = String(Math.floor(parseFloat(sp[2] || '0'))).padStart(2, '0');
+        return isDec ? (isNeg ? '-' : '+') + hOrD + ':' + m + ':' + s : hOrD + ':' + m + ':' + s;
+      }
+      // decimal degrees
+      const num = parseFloat(clean);
+      if (!isNaN(num) && (clean.includes('.') || !clean.includes(':'))) {
+        if (isDec) {
+          const isNeg = num < 0;
+          const abs = Math.abs(num);
+          const d = Math.floor(abs);
+          const rem = (abs - d) * 60;
+          const m = Math.floor(rem);
+          const s = Math.floor((rem - m) * 60);
+          return (isNeg ? '-' : '+') + String(d).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        } else {
+          const hours = num >= 0 && num <= 360 ? num / 15 : num;
+          const h = Math.floor(hours) % 24;
+          const remM = (hours - Math.floor(hours)) * 60;
+          const m = Math.floor(remM);
+          const s = Math.floor((remM - m) * 60);
+          return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+      }
+      return clean;
+    }
+
+    function onPasteInputChanged() {
+      const text = document.getElementById('paste-input-text').value.trim();
+      const ctrlBox = document.getElementById('paste-controls-box');
+      const rowCountEl = document.getElementById('paste-row-count');
+      const importBtn = document.getElementById('paste-btn-import');
+
+      if (!text) {
+        ctrlBox.style.display = 'none';
+        rowCountEl.textContent = '(0 targets detected)';
+        importBtn.disabled = true;
+        return;
+      }
+
+      ctrlBox.style.display = 'flex';
+
+      const selDelim = document.getElementById('paste-delim-sel').value;
+      const delimiter = selDelim === 'auto' ? detectPasteDelimiter(text) : (selDelim === 'tab' ? '\t' : selDelim === 'comma' ? ',' : selDelim === 'semi' ? ';' : 'whitespace');
+
+      const rawLines = text.split(/\r?\n/).filter(l => l.trim().length > 0 && !l.trim().startsWith('#'));
+      const parsedRows = [];
+      for (const line of rawLines) {
+        if (delimiter === 'whitespace') {
+          parsedRows.push(line.trim().split(/\s+/).filter(Boolean));
+        } else {
+          parsedRows.push(line.split(delimiter).map(c => c.trim().replace(/^["']|["']$/g, '')));
+        }
+      }
+
+      if (parsedRows.length === 0) {
+        rowCountEl.textContent = '(0 targets detected)';
+        importBtn.disabled = true;
+        return;
+      }
+
+      // Detect header row
+      const firstRow = parsedRows[0];
+      const headerKeywords = ['name', 'target', 'label', 'obj', 'object', 'field', 'id', 'ra', 'dec', 'filter', 'exp', 'time'];
+      const matches = firstRow.filter(cell => {
+        const lower = cell.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return headerKeywords.some(kw => lower === kw || lower.startsWith(kw));
+      });
+      const hasHeader = matches.length >= 1;
+      document.getElementById('paste-chk-header').checked = hasHeader;
+
+      parsedPasteData = {
+        allRows: parsedRows,
+        delimiter,
+        hasHeader
+      };
+
+      // Populate column selectors
+      const maxCols = Math.max(...parsedRows.map(r => r.length));
+      const headers = hasHeader ? firstRow : Array.from({ length: maxCols }, (_, i) => 'Col ' + (i + 1));
+      const samples = (hasHeader ? parsedRows[1] : parsedRows[0]) || [];
+
+      const populateSelect = (selectId, defaultIdx) => {
+        const sel = document.getElementById(selectId);
+        sel.innerHTML = '';
+        for (let i = 0; i < maxCols; i++) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          const sampleStr = samples[i] ? ' (' + samples[i] + ')' : '';
+          opt.textContent = (headers[i] || 'Col ' + (i + 1)) + sampleStr;
+          if (i === defaultIdx) opt.selected = true;
+          sel.appendChild(opt);
+        }
+      };
+
+      // Intelligent column mapping
+      let labelIdx = 0, raIdx = Math.min(1, maxCols - 1), decIdx = Math.min(2, maxCols - 1);
+      headers.forEach((h, i) => {
+        const l = h.toLowerCase();
+        if (/^(name|target|label|field|obj)/.test(l)) labelIdx = i;
+        if (/^(ra|alpha)/.test(l)) raIdx = i;
+        if (/^(dec|delta)/.test(l)) decIdx = i;
+      });
+
+      populateSelect('paste-sel-label', labelIdx);
+      populateSelect('paste-sel-ra', raIdx);
+      populateSelect('paste-sel-dec', decIdx);
+
+      updatePastePreview();
+    }
+
+    function updatePastePreview() {
+      const hasHeader = document.getElementById('paste-chk-header').checked;
+      const normalize = document.getElementById('paste-chk-norm').checked;
+      const includeExtra = document.getElementById('paste-chk-extra').checked;
+      const labelCol = parseInt(document.getElementById('paste-sel-label').value, 10);
+      const raCol = parseInt(document.getElementById('paste-sel-ra').value, 10);
+      const decCol = parseInt(document.getElementById('paste-sel-dec').value, 10);
+
+      const allRows = parsedPasteData.allRows || [];
+      const dataRows = hasHeader ? allRows.slice(1) : allRows;
+
+      const rowCountEl = document.getElementById('paste-row-count');
+      const importBtn = document.getElementById('paste-btn-import');
+      rowCountEl.textContent = '(' + dataRows.length + ' targets ready to import)';
+      importBtn.disabled = dataRows.length === 0;
+
+      const previewRows = dataRows.slice(0, 5);
+      const lines = [];
+      previewRows.forEach((r, idx) => {
+        let label = (r[labelCol] || ('TARGET_' + (idx + 1))).trim().replace(/\s+/g, '_');
+        let ra = (r[raCol] || '-').trim();
+        let dec = (r[decCol] || '-').trim();
+        if (normalize) {
+          ra = normalizeCoordStr(ra, false);
+          dec = normalizeCoordStr(dec, true);
+        }
+        const toks = [label, ra, dec];
+        if (includeExtra) {
+          r.forEach((cell, ci) => {
+            if (ci !== labelCol && ci !== raCol && ci !== decCol && cell.trim()) {
+              toks.push(cell.trim().replace(/\s+/g, '_'));
+            }
+          });
+        }
+        lines.push(padRight(toks[0], 14) + ' ' + padRight(toks[1], 12) + ' ' + padRight(toks[2], 12) + ' ' + toks.slice(3).join(' '));
+      });
+
+      document.getElementById('paste-preview-text').textContent = lines.join('\n');
+    }
+
+    function doImportTable() {
+      const hasHeader = document.getElementById('paste-chk-header').checked;
+      const normalize = document.getElementById('paste-chk-norm').checked;
+      const includeExtra = document.getElementById('paste-chk-extra').checked;
+      const labelCol = parseInt(document.getElementById('paste-sel-label').value, 10);
+      const raCol = parseInt(document.getElementById('paste-sel-ra').value, 10);
+      const decCol = parseInt(document.getElementById('paste-sel-dec').value, 10);
+
+      const allRows = parsedPasteData.allRows || [];
+      const dataRows = hasHeader ? allRows.slice(1) : allRows;
+      if (dataRows.length === 0) return;
+
+      const lines = [];
+      dataRows.forEach((r, idx) => {
+        let label = (r[labelCol] || ('TARGET_' + (idx + 1))).trim().replace(/\s+/g, '_');
+        let ra = (r[raCol] || '-').trim();
+        let dec = (r[decCol] || '-').trim();
+        if (normalize) {
+          ra = normalizeCoordStr(ra, false);
+          dec = normalizeCoordStr(dec, true);
+        }
+        const toks = [label, ra, dec];
+        if (includeExtra) {
+          r.forEach((cell, ci) => {
+            if (ci !== labelCol && ci !== raCol && ci !== decCol && cell.trim()) {
+              toks.push(cell.trim().replace(/\s+/g, '_'));
+            }
+          });
+        }
+        lines.push(padRight(toks[0], 14) + ' ' + padRight(toks[1], 12) + ' ' + padRight(toks[2], 12) + ' ' + toks.slice(3).join(' '));
+      });
+
+      const newContent = lines.join('\n');
+      const catArea = document.getElementById('cat-text');
+      const mode = document.querySelector('input[name="pasteMode"]:checked').value;
+
+      if (mode === 'replace') {
+        catArea.value = newContent;
+      } else {
+        const current = catArea.value.trim();
+        catArea.value = current ? current + '\n' + newContent : newContent;
+      }
+
+      closePasteModal();
+      compileScript();
+      setCatTab('table');
+    }
+
+    // Global paste listener for Excel/Sheets copy-paste
+    window.addEventListener('paste', e => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
+        // If typing in textarea, allow natural paste unless it's in the table view
+        return;
+      }
+      const clip = e.clipboardData ? e.clipboardData.getData('text') : '';
+      if (clip && (clip.includes('\t') || clip.includes(',') || clip.includes('\n'))) {
+        e.preventDefault();
+        openPasteModal(clip);
+      }
+    });
+
+    function setTheme(th) {
+      document.documentElement.className = 'theme-' + th;
+    }
+
+    function setFontScale(scale) {
+      const zoomVal = scale === 'small' ? '0.88' : scale === 'large' ? '1.15' : '1.0';
+      const fontPx = scale === 'small' ? '12px' : scale === 'large' ? '17px' : '14px';
+      document.documentElement.style.fontSize = fontPx;
+      document.body.style.fontSize = fontPx;
+      document.body.style.zoom = zoomVal;
+    }
+
+    function openAppearanceModal() { document.getElementById('appearance-modal').classList.add('open'); }
+    function closeAppearanceModal() { document.getElementById('appearance-modal').classList.remove('open'); }
+
+    function loadPreset(id) {
+      const p = PRESETS.find(x => x.id === id);
+      if (!p) return;
+      resetWindowTiming();
+      document.getElementById('set-text').value = p.setFileContent;
+      document.getElementById('set-name').value = p.defaultSetName;
+      document.getElementById('cat-text').value = p.catFileContent;
+      document.getElementById('cat-name').value = p.defaultCatName;
+      document.getElementById('loop-n').value = p.defaultLoopN;
+      compileScript();
+    }
+
+    function downloadText(content, filename, type = "text/plain;charset=utf-8") {
+      const b = new Blob([content], { type });
+      const u = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = u;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(u);
+    }
+
+    function downloadOutput() {
+      if (!scriptReady) return;
+      const text = document.getElementById('out-text').textContent;
+      const name = document.getElementById('out-name').textContent;
+      downloadText(text, name);
+    }
+
+    function copyOutput() {
+      if (!scriptReady) return;
+      const text = document.getElementById('out-text').textContent;
+      navigator.clipboard.writeText(text);
+    }
+
+    // Load .set / .cat from disk (Open buttons and drag & drop)
+    function readTextFile(file, kind) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById(kind + '-text').value = String(reader.result).replace(/\r\n?/g, '\n');
+        document.getElementById(kind + '-name').value = file.name;
+        compileScript();
+      };
+      reader.onerror = () => {
+        document.getElementById(kind + '-status').textContent = 'Error: cannot read ' + file.name;
+      };
+      reader.readAsText(file);
+    }
+
+    function onFileInput(input, kind) {
+      const f = input.files && input.files[0];
+      if (f) readTextFile(f, kind);
+      input.value = '';  // allow re-loading the same file
+    }
+
+    function setupFileDrop() {
+      const kindOf = f => (/\.set$/i.test(f.name) ? 'set' : 'cat');
+      window.addEventListener('dragover', e => { e.preventDefault(); });
+      window.addEventListener('drop', e => {
+        e.preventDefault();
+        const files = Array.from((e.dataTransfer && e.dataTransfer.files) || []);
+        if (files.length === 0) return;
+        // One file dropped on a panel -> that panel; otherwise route by extension.
+        const panel = e.target && e.target.closest ? e.target.closest('[data-drop]') : null;
+        files.forEach(f => readTextFile(f, files.length === 1 && panel ? panel.dataset.drop : kindOf(f)));
+      });
+    }
+
+    window.onload = function() {
+      compileScript();
+      setupSkyMapInteractions();
+      setupFileDrop();
+      syncTimeInput();
+    };
+  </script>
+</body>
+</html>

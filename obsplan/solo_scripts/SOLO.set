@@ -1,0 +1,13 @@
+SOLO                   # Project name
+1                      # Filter sequence per each position
+R 60                   # Filter name and exposure time
+1                      # column no. for LABEL
+2                      # column no. for RA
+3                      # column no. for DEC
+0                      # set for COPT
+OBJECT                 # name for IMAGETYP
+1                      # column no. for OBJECT name
+0                      # column no. for FILTER
+0                      # column no. for EXPOSURE time
+0                      # column no. for UTOBS
+0                      # set for UTTOL time in seconds
